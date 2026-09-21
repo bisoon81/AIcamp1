@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>신호 도둑을 찾아라! (Signal Thief : 8:20 AM)</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&family=JetBrains+Mono:wght@600;800&display=swap">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #060913;
+      color: #f1f5f9;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .glow-cyan { filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.45)); }
+    .glow-red { filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.5)); }
+    .glow-amber { filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.45)); }
+    
+    @keyframes pulseSlow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(0.98); }
+    }
+    .pulse-warning { animation: pulseSlow 2s ease-in-out infinite; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans selection:bg-cyan-500 selection:text-white">
+
+  <!-- TOP BAR: 5-Minute Master Timer & Controls -->
+  <header class="sticky top-0 z-50 bg-[#060913]/95 backdrop-blur-md border-b border-slate-800 px-3.5 py-2.5 flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-red-600 to-amber-600 flex items-center justify-center text-white text-sm shadow-md shadow-red-500/30">
+        <i class="fa-solid fa-satellite-dish"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <span class="text-[9px] font-mono font-bold tracking-wider uppercase px-1.5 py-0.2 rounded bg-red-950 text-red-400 border border-red-800/80">
+            5-MIN MISSION
+          </span>
+          <span class="text-[11px] text-slate-400 font-medium">등교길 신호 도둑</span>
+        </div>
+        <h1 class="text-xs md:text-sm font-black text-white tracking-tight">신호 도둑을 찾아라!</h1>
+      </div>
+    </div>
+
+    <!-- Timer & Controls -->
+    <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1.5 bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-lg font-mono text-xs">
+        <i class="fa-regular fa-clock text-amber-400"></i>
+        <span id="overallTimer" class="font-bold text-amber-300">05:00</span>
+      </div>
+      <button id="soundToggleBtn" class="w-7 h-7 rounded-lg bg-slate-900 border border-slate-800 text-cyan-400 flex items-center justify-center text-xs">
+        <i class="fa-solid fa-volume-high" id="soundIcon"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- STEP NAVIGATION TABS -->
+  <nav class="bg-slate-950/80 border-b border-slate-800/60 px-3 py-1.5 flex items-center justify-between gap-1 max-w-lg mx-auto w-full sticky top-[49px] z-40">
+    <button class="step-btn flex-1 py-1 px-1.5 rounded-lg text-xs font-bold border transition-all flex items-center justify-center gap-1 bg-cyan-500/20 border-cyan-400 text-cyan-300" data-step="1">
+      <span>1R. 신호 사냥</span>
+      <span id="huntCountBadge" class="text-[10px] font-mono bg-cyan-500/30 px-1 rounded-full">0/10</span>
+    </button>
+    <button class="step-btn flex-1 py-1 px-1.5 rounded-lg text-xs font-bold border transition-all flex items-center justify-center gap-1 bg-slate-900 border-slate-800 text-slate-400" data-step="2">
+      <span>2R. 3초 O/X</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+    </button>
+    <button class="step-btn flex-1 py-1 px-1.5 rounded-lg text-xs font-bold border transition-all flex items-center justify-center gap-1 bg-slate-900 border-slate-800 text-slate-400" data-step="3">
+      <span>3. 신호의 비밀</span>
+    </button>
+  </nav>
+
+  <!-- MAIN VIEWPORT -->
+  <main class="flex-1 max-w-lg mx-auto w-full p-3.5 pb-16 flex flex-col gap-3.5">
+
+    <!-- ========================================================================= -->
+    <!-- STEP 1: 60초 신호 사냥 (진짜 기기 vs 가짜 함정 기기)                     -->
+    <!-- ========================================================================= -->
+    <section id="view-step1" class="step-view flex flex-col gap-3">
+      
+      <!-- Briefing Alert Card -->
+      <div class="rounded-xl bg-gradient-to-br from-red-950/70 via-slate-900 to-slate-900 border border-red-700/60 p-3.5 glow-red">
+        <div class="flex items-start gap-3">
+          <div class="w-9 h-9 rounded-lg bg-red-600/20 border border-red-500 flex-shrink-0 flex items-center justify-center text-red-400 text-base">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[9px] font-mono font-bold text-red-400 uppercase tracking-wider">[긴급 상황]</span>
+              <span class="text-[11px] text-slate-400">07:00 ~ 08:20 등교길</span>
+            </div>
+            <h2 class="text-sm font-extrabold text-white mt-0.5">내 몸을 '전기신호'로 훔쳐간 기기를 색출하라!</h2>
+            <p class="text-xs text-slate-300 mt-1 leading-snug">
+              오늘 아침 내 <b>움직임·체온·압력·접촉</b>을 읽어간 기기만 빠르게 터치하세요! (가짜 함정 주의)
+            </p>
+          </div>
+        </div>
+
+        <!-- 60s Round Timer & Score -->
+        <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs font-mono">
+          <div class="flex items-center gap-1.5">
+            <span class="text-slate-400">제한시간:</span>
+            <span id="round1Timer" class="text-amber-400 font-extrabold text-sm">60s</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-slate-400">발견율:</span>
+            <span id="huntScoreText" class="text-cyan-400 font-extrabold text-sm">0% (0개)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Search / Filter Tabs -->
+      <div class="flex items-center justify-between text-[11px] text-slate-400 px-1">
+        <span>의심 기기를 터치해 신호 압수!</span>
+        <button id="giveUpHintBtn" class="text-cyan-400 hover:underline">💡 힌트 보기</button>
+      </div>
+
+      <!-- Device Cards Grid (10 Real Devices + 4 Trap Items) -->
+      <div class="grid grid-cols-2 gap-2" id="huntGrid">
+        <!-- JS will populate interactive cards -->
+      </div>
+
+      <!-- Trap Alert Toast -->
+      <div id="trapToast" class="hidden p-2.5 rounded-lg bg-red-950 border border-red-700 text-red-200 text-xs text-center font-bold">
+        ⚠️ 탈락 후보 감지! 이것은 전기신호를 읽는 센서가 아닙니다!
+      </div>
+
+      <!-- Next Step Button -->
+      <div class="pt-2">
+        <button id="finishHuntBtn" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-xs shadow-lg shadow-cyan-600/30 flex items-center justify-center gap-2 transition-all">
+          <span>신호 사냥 완료! 2라운드 3초 팩트체크로</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- STEP 2: 3초 컷 O/X 밸런스 퀴즈 (3문항)                                    -->
+    <!-- ========================================================================= -->
+    <section id="view-step2" class="step-view hidden flex flex-col gap-3.5">
+      
+      <!-- Quiz Progress Bar -->
+      <div class="flex items-center justify-between text-xs font-mono px-1">
+        <span class="text-amber-400 font-bold">ROUND 2: 진짜 신호 vs 가짜 신호</span>
+        <span id="quizIndexText" class="text-slate-400">1 / 3</span>
+      </div>
+
+      <!-- Question Card Container -->
+      <div id="quizContainer" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col gap-3">
+        
+        <!-- Badge & Question Title -->
+        <div>
+          <div class="flex items-center justify-between">
+            <span id="quizBadge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+              Q1. 현관 센서등
+            </span>
+            <span id="quizCategory" class="text-xs text-slate-400 font-medium">체온과 적외선</span>
+          </div>
+          <h3 id="quizQuestion" class="text-sm md:text-base font-extrabold text-white mt-1.5 leading-snug">
+            센서등 아래에서 로봇처럼 완전히 가만히 멈춰 서 있으면 불이 켜져 있을까, 꺼질까?
+          </h3>
+        </div>
+
+        <!-- Visual / Interactive Simulator Preview Box -->
+        <div id="quizVisualBox" class="h-28 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center p-3 relative overflow-hidden">
+          <canvas id="quizWaveCanvas" class="w-full h-full block"></canvas>
+          <div id="quizVisualBadge" class="absolute bottom-1.5 right-2 text-[10px] font-mono text-cyan-400/80 bg-slate-900/80 px-2 py-0.5 rounded">
+            초전소자 차동전압: 감지 중
+          </div>
+        </div>
+
+        <!-- Choice Buttons (O / X) -->
+        <div class="grid grid-cols-2 gap-2.5 pt-1" id="quizButtons">
+          <button class="quiz-choice-btn py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-black text-base border border-slate-700 active:scale-95 transition-all flex items-center justify-center gap-2" data-choice="O">
+            <i class="fa-regular fa-circle-check text-cyan-400"></i>
+            <span id="choiceLabelO">켜져 있다</span>
+          </button>
+          <button class="quiz-choice-btn py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-black text-base border border-slate-700 active:scale-95 transition-all flex items-center justify-center gap-2" data-choice="X">
+            <i class="fa-regular fa-circle-xmark text-red-400"></i>
+            <span id="choiceLabelX">꺼진다!</span>
+          </button>
+        </div>
+
+        <!-- Feedback & Scientific Principle (Revealed after click) -->
+        <div id="quizFeedbackBox" class="hidden rounded-xl p-3 border text-xs leading-relaxed transition-all">
+          <div class="flex items-center gap-1.5 font-bold mb-1" id="quizFeedbackTitle">
+            <!-- JS inserts correct / incorrect icon -->
+          </div>
+          <p id="quizFeedbackContent" class="text-slate-200 text-[11px]"></p>
+        </div>
+
+        <!-- Next Question Button -->
+        <button id="nextQuizBtn" class="hidden w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs transition-all flex items-center justify-center gap-2">
+          <span>다음 문제 풀기</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+      </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- STEP 3: 신호의 비밀 & 탐정 등급 배지 (본시 착륙)                          -->
+    <!-- ========================================================================= -->
+    <section id="view-step3" class="step-view hidden flex flex-col gap-3.5">
+      
+      <!-- Core Insight Banner -->
+      <div class="rounded-2xl bg-gradient-to-br from-cyan-950/80 via-slate-900 to-purple-950/80 border border-cyan-500/40 p-4 text-center glow-cyan">
+        <div class="w-12 h-12 rounded-xl bg-cyan-500/20 border border-cyan-400 mx-auto flex items-center justify-center text-cyan-300 text-xl mb-2.5">
+          <i class="fa-solid fa-bolt-lightning"></i>
+        </div>
+        <span class="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-wider">오늘의 핵심 통찰</span>
+        <h2 class="text-sm md:text-base font-black text-white mt-1 leading-snug">
+          "전기는 단순히 선풍기를 돌리는 에너지가 아니라,<br>
+          세상을 관찰하고 판단하는 <span class="text-cyan-400 underline underline-offset-4">‘정보의 언어’</span>다!"
+        </h2>
+        <p class="text-[11px] text-slate-300 mt-2 leading-relaxed">
+          오늘 아침 여러분의 <b>체온, 발걸음 속도, 손가락 터치, 통과 각도</b>는 단 1초도 쉬지 않고 전기신호로 번역되어 도시를 움직였습니다.
+        </p>
+      </div>
+
+      <!-- Student Detective Badge Card -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center text-amber-300 text-xl flex-shrink-0">
+          <i class="fa-solid fa-award"></i>
+        </div>
+        <div>
+          <span class="text-[10px] font-mono text-slate-400 block">MY SIGNAL DETECTIVE RANK</span>
+          <h3 id="detectiveRankTitle" class="text-sm font-extrabold text-white">1급 신호 보안관 (탐정 등급: A+)</h3>
+          <p id="detectiveRankDesc" class="text-[11px] text-slate-400 mt-0.5">신호 사냥 10개 색출 성공 / 퀴즈 3문항 정답</p>
+        </div>
+      </div>
+
+      <!-- 1-Line Student Reflection -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 flex flex-col gap-2">
+        <label class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+          <i class="fa-solid fa-pen-nib text-cyan-400"></i>
+          <span>오늘 등교길에서 가장 신기했던 '신호 도둑'은?</span>
+        </label>
+        <div class="flex gap-2">
+          <input type="text" id="studentReflection" placeholder="예: 멈추면 꺼지는 센서등의 초전소자가 신기했다!" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400">
+          <button id="saveReflectionBtn" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition-colors whitespace-nowrap">
+            등록
+          </button>
+        </div>
+        <p id="reflectionSavedToast" class="text-[11px] text-emerald-400 font-bold hidden">✓ 한 줄 소감이 저장되었습니다! 본시 수업으로 진입하세요.</p>
+      </div>
+
+      <!-- Teacher Transition Script -->
+      <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-3 flex items-start gap-2.5">
+        <i class="fa-solid fa-chalkboard-user text-purple-400 text-sm mt-0.5"></i>
+        <p class="text-[11px] text-slate-300 leading-relaxed">
+          <b class="text-white">교사용 수업 착륙 스크립트:</b><br>
+          "자, 이제 일상 속 숨겨진 신호들을 직접 목격했습니다. 그렇다면 이 센서들이 만든 미세한 전기신호가 어떻게 도시 전력망을 지탱하고, 전기차를 멈추며, 인간의 뇌파까지 해석하는지 지금부터 본시 교안으로 확인해 봅시다!"
+        </p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // 14 Total Items: 10 Real Devices + 4 Trap Items
+    const HUNT_ITEMS = [
+      { id: 'phone', name: '스마트폰 알람/터치', icon: 'fa-mobile-screen-button', isReal: true, desc: 'MEMS 가속도계 & 정전용량' },
+      { id: 'doorlock', name: '디지털 도어록', icon: 'fa-fingerprint', isReal: true, desc: '접촉 전류 & 지문 융선 패턴' },
+      { id: 'mirror', name: '화장실 거울', icon: 'fa-wand-magic-sparkles', isReal: false, desc: '단순 가시광선 반사 (센서 없음)' },
+      { id: 'pir', name: '현관 센서등', icon: 'fa-lightbulb', isReal: true, desc: '초전소자 적외선 차동 전압' },
+      { id: 'elevator', name: '엘리베이터 광선', icon: 'fa-elevator', isReal: true, desc: '적외선 빔 차단 인터럽트' },
+      { id: 'autodoor', name: '자동문 레이더', icon: 'fa-door-open', isReal: true, desc: '24GHz 도플러 주파수 편이' },
+      { id: 'comb', name: '플라스틱 머리빗', icon: 'fa-bars', isReal: false, desc: '정전기는 생기나 정보 신호화 불가' },
+      { id: 'crosswalk', name: '보행 신호기 버튼', icon: 'fa-hand-pointer', isReal: true, desc: '스프링 접점 TTL 5V 펄스' },
+      { id: 'transitcard', name: '교통카드 단말기', icon: 'fa-id-card-clip', isReal: true, desc: '패러데이 전자기 유도' },
+      { id: 'busbell', name: '버스 하차벨', icon: 'fa-bell', isReal: true, desc: '누름 펄스 & 래치 회로 기억' },
+      { id: 'umbrella', name: '일반 장우산', icon: 'fa-umbrella', isReal: false, desc: '물리적 비 가림막 (센서 없음)' },
+      { id: 'subwaygate', name: '개찰구 포토센서', icon: 'fa-torii-gate', isReal: true, desc: '다채널 광차단 타이밍 분석' },
+      { id: 'school', name: '학교 열화상/출결', icon: 'fa-school', isReal: true, desc: '흑체 복사열 & BLE 비콘' },
+      { id: 'desk', name: '교실 나무 책상', icon: 'fa-cube', isReal: false, desc: '단순 지지 구조물 (센서 없음)' }
+    ];
+
+    // Round 2 Quizzes
+    const QUIZ_LIST = [
+      {
+        badge: 'Q1. 현관 센서등',
+        category: '체온과 적외선',
+        question: '센서등 아래에서 로봇처럼 완전히 가만히 멈춰 서 있으면 불이 켜져 있을까, 꺼질까?',
+        labelO: '켜져 있다',
+        labelX: '꺼진다!',
+        correct: 'X',
+        waveType: 'pir',
+        feedbackCorrect: '정답입니다! 불이 꺼집니다!',
+        feedbackWrong: '틀렸습니다! 센서등은 꺼집니다!',
+        explanation: '인체 체온(10μm 적외선)의 ‘공간적 온도 변화(차이)’가 생겨야만 센서 안의 두 소자 사이에 차동 전압(ΔV)이 발생합니다. 정지하면 전압이 0V가 되어 스위치가 꺼집니다.'
+      },
+      {
+        badge: 'Q2. 교통카드 단말기',
+        category: '전자기 유도',
+        question: '교통카드 속에 배터리가 들어있어서 단말기에 전기를 쏴주는 것이다? (O / X)',
+        labelO: 'O (배터리 있음)',
+        labelX: 'X (배터리 0개!)',
+        correct: 'X',
+        waveType: 'nfc',
+        feedbackCorrect: '정답입니다! 카드엔 배터리가 0개입니다!',
+        feedbackWrong: '틀렸습니다! 카드는 배터리가 없습니다!',
+        explanation: '교통카드 속에는 배터리가 전혀 없습니다! 단말기가 방출하는 13.56MHz 교류 자기장을 통과할 때 생기는 패러데이 전자기 유도로 유도 기전력을 얻어 순간적으로 칩이 깨어납니다.'
+      },
+      {
+        badge: 'Q3. 공동현관 자동문',
+        category: '도플러 효과',
+        question: '공동현관 자동문 앞에서 나무늘보처럼 초속 1cm로 아주아주 천천히 다가가면 문이 열릴까?',
+        labelO: '열린다',
+        labelX: '안 열린다!',
+        correct: 'X',
+        waveType: 'doppler',
+        feedbackCorrect: '정답입니다! 문이 열리지 않습니다!',
+        feedbackWrong: '틀렸습니다! 문이 열리지 않습니다!',
+        explanation: '마이크로웨이브 센서는 물체의 위치가 아니라 도플러 효과로 인한 주파수 편이(Δf = 2v·f0 / c)를 측정합니다. 속도가 너무 느리면 필터 기준치 이하로 떨어져 센서가 사람을 인식하지 못합니다.'
+      }
+    ];
+
+    // State Variables
+    const selectedHunts = new Set();
+    let currentQuizIndex = 0;
+    let quizScore = 0;
+    let soundEnabled = true;
+    let audioCtx = null;
+    let round1Seconds = 60;
+    let round1Interval = null;
+    let masterSeconds = 300; // 5 mins
+    let masterInterval = null;
+
+    // Web Audio Synthesizer
+    function playTone(freq = 600, duration = 0.08, type = 'sine') {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.debug('Audio error', e);
+      }
+    }
+
+    function playSuccessChime() {
+      if (!soundEnabled) return;
+      playTone(523, 0.06, 'triangle');
+      setTimeout(() => playTone(659, 0.08, 'sine'), 60);
+      setTimeout(() => playTone(784, 0.12, 'sine'), 120);
+    }
+
+    function playBuzz() {
+      if (!soundEnabled) return;
+      playTone(180, 0.2, 'sawtooth');
+    }
+
+    // Render Round 1 Hunt Grid
+    function renderHuntGrid() {
+      const grid = document.getElementById('huntGrid');
+      grid.innerHTML = '';
+
+      HUNT_ITEMS.forEach(item => {
+        const isSelected = selectedHunts.has(item.id);
+        const card = document.createElement('div');
+        card.className = `p-2.5 rounded-xl border transition-all cursor-pointer select-none flex items-start gap-2.5 ${
+          isSelected 
+            ? 'bg-cyan-950/80 border-cyan-400 glow-cyan' 
+            : 'bg-slate-900/80 border-slate-800 hover:border-slate-700'
+        }`;
+
+        card.innerHTML = `
+          <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-xs ${
+            isSelected ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-slate-800 text-slate-400'
+          }">
+            <i class="fa-solid ${item.icon}"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-white truncate">${item.name}</span>
+              ${isSelected ? '<span class="text-cyan-400 text-xs font-bold">✓</span>' : ''}
+            </div>
+            <p class="text-[10px] text-slate-400 truncate mt-0.5">${item.desc}</p>
+          </div>
+        `;
+
+        card.addEventListener('click', () => handleHuntClick(item));
+        grid.appendChild(card);
+      });
+
+      updateHuntScore();
+    }
+
+    function handleHuntClick(item) {
+      if (!item.isReal) {
+        // Trap triggered!
+        playBuzz();
+        const toast = document.getElementById('trapToast');
+        toast.textContent = `⚠️ [탈락 후보!] '${item.name}'은(는) 신호를 읽지 않습니다! (${item.desc})`;
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 2600);
+        return;
+      }
+
+      if (selectedHunts.has(item.id)) {
+        selectedHunts.delete(item.id);
+        playTone(380, 0.05, 'sine');
+      } else {
+        selectedHunts.add(item.id);
+        playTone(700, 0.08, 'triangle');
+      }
+      renderHuntGrid();
+    }
+
+    function updateHuntScore() {
+      const realCount = Array.from(selectedHunts).filter(id => {
+        const it = HUNT_ITEMS.find(x => x.id === id);
+        return it && it.isReal;
+      }).length;
+
+      document.getElementById('huntCountBadge').textContent = `${realCount}/10`;
+      const pct = Math.round((realCount / 10) * 100);
+      document.getElementById('huntScoreText').textContent = `${pct}% (${realCount}개)`;
+    }
+
+    // Step View Switcher
+    function switchStep(stepNum) {
+      document.querySelectorAll('.step-view').forEach(v => v.classList.add('hidden'));
+      document.getElementById(`view-step${stepNum}`).classList.remove('hidden');
+
+      document.querySelectorAll('.step-btn').forEach(btn => {
+        if (btn.getAttribute('data-step') === String(stepNum)) {
+          btn.className = 'step-btn flex-1 py-1 px-1.5 rounded-lg text-xs font-bold border transition-all flex items-center justify-center gap-1 bg-cyan-500/20 border-cyan-400 text-cyan-300';
+        } else {
+          btn.className = 'step-btn flex-1 py-1 px-1.5 rounded-lg text-xs font-bold border transition-all flex items-center justify-center gap-1 bg-slate-900 border-slate-800 text-slate-400';
+        }
+      });
+
+      playTone(550, 0.05, 'sine');
+
+      if (stepNum === 2) {
+        loadQuiz(currentQuizIndex);
+        resizeWaveCanvas();
+      } else if (stepNum === 3) {
+        calculateFinalBadge();
+      }
+    }
+
+    // Round 2 Quiz Controller
+    function loadQuiz(idx) {
+      const q = QUIZ_LIST[idx];
+      document.getElementById('quizIndexText').textContent = `${idx + 1} / ${QUIZ_LIST.length}`;
+      document.getElementById('quizBadge').textContent = q.badge;
+      document.getElementById('quizCategory').textContent = q.category;
+      document.getElementById('quizQuestion').textContent = q.question;
+      document.getElementById('choiceLabelO').textContent = q.labelO;
+      document.getElementById('choiceLabelX').textContent = q.labelX;
+
+      // Reset feedback and buttons
+      document.getElementById('quizFeedbackBox').classList.add('hidden');
+      document.getElementById('nextQuizBtn').classList.add('hidden');
+      document.querySelectorAll('.quiz-choice-btn').forEach(b => {
+        b.disabled = false;
+        b.className = 'quiz-choice-btn py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-black text-base border border-slate-700 active:scale-95 transition-all flex items-center justify-center gap-2';
+      });
+    }
+
+    function handleQuizChoice(choice) {
+      const q = QUIZ_LIST[currentQuizIndex];
+      const isCorrect = (choice === q.correct);
+      if (isCorrect) quizScore++;
+
+      // Lock buttons
+      document.querySelectorAll('.quiz-choice-btn').forEach(b => {
+        b.disabled = true;
+        const bChoice = b.getAttribute('data-choice');
+        if (bChoice === q.correct) {
+          b.className = 'quiz-choice-btn py-3 rounded-xl bg-emerald-600 text-white font-black text-base border border-emerald-400 flex items-center justify-center gap-2';
+        } else if (bChoice === choice && !isCorrect) {
+          b.className = 'quiz-choice-btn py-3 rounded-xl bg-red-600 text-white font-black text-base border border-red-400 flex items-center justify-center gap-2';
+        }
+      });
+
+      // Sound & Feedback
+      const fBox = document.getElementById('quizFeedbackBox');
+      const fTitle = document.getElementById('quizFeedbackTitle');
+      const fContent = document.getElementById('quizFeedbackContent');
+
+      if (isCorrect) {
+        playSuccessChime();
+        fBox.className = 'rounded-xl p-3 border bg-emerald-950/70 border-emerald-500 text-emerald-200 text-xs leading-relaxed';
+        fTitle.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i><span>${q.feedbackCorrect}</span>`;
+      } else {
+        playBuzz();
+        fBox.className = 'rounded-xl p-3 border bg-red-950/70 border-red-500 text-red-200 text-xs leading-relaxed';
+        fTitle.innerHTML = `<i class="fa-solid fa-circle-xmark text-red-400"></i><span>${q.feedbackWrong}</span>`;
+      }
+
+      fContent.textContent = `💡 [과학 해설] ${q.explanation}`;
+      fBox.classList.remove('hidden');
+
+      const nextBtn = document.getElementById('nextQuizBtn');
+      nextBtn.classList.remove('hidden');
+      if (currentQuizIndex === QUIZ_LIST.length - 1) {
+        nextBtn.innerHTML = '<span>최종 탐정 결과 및 3단계 보기</span><i class="fa-solid fa-arrow-right"></i>';
+      } else {
+        nextBtn.innerHTML = '<span>다음 문제 풀기</span><i class="fa-solid fa-arrow-right"></i>';
+      }
+    }
+
+    // Step 3 Final Detective Ranking
+    function calculateFinalBadge() {
+      const realCount = Array.from(selectedHunts).filter(id => {
+        const it = HUNT_ITEMS.find(x => x.id === id);
+        return it && it.isReal;
+      }).length;
+
+      const title = document.getElementById('detectiveRankTitle');
+      const desc = document.getElementById('detectiveRankDesc');
+
+      if (realCount >= 8 && quizScore >= 2) {
+        title.textContent = '🌟 특급 일급 신호 탐정 (Rank: SSS)';
+        desc.textContent = `신호 사냥 ${realCount}/10개 색출 성공! / 팩트체크 퀴즈 ${quizScore}/3 정답`;
+      } else if (realCount >= 5) {
+        title.textContent = '⚡ 엘리트 신호 분석관 (Rank: A)';
+        desc.textContent = `신호 사냥 ${realCount}/10개 색출 성공! / 팩트체크 퀴즈 ${quizScore}/3 정답`;
+      } else {
+        title.textContent = '🔍 수습 신호 추적자 (Rank: B)';
+        desc.textContent = `신호 사냥 ${realCount}/10개 색출 / 팩트체크 퀴즈 ${quizScore}/3 정답`;
+      }
+    }
+
+    // Canvas Signal Oscilloscope for Step 2
+    let waveCanvas, waveCtx, wavePhase = 0;
+    function initWaveCanvas() {
+      waveCanvas = document.getElementById('quizWaveCanvas');
+      if (!waveCanvas) return;
+      waveCtx = waveCanvas.getContext('2d');
+      resizeWaveCanvas();
+      window.addEventListener('resize', resizeWaveCanvas);
+      requestAnimationFrame(renderQuizWave);
+    }
+
+    function resizeWaveCanvas() {
+      if (waveCanvas && waveCanvas.parentElement) {
+        waveCanvas.width = waveCanvas.parentElement.clientWidth;
+        waveCanvas.height = waveCanvas.parentElement.clientHeight;
+      }
+    }
+
+    function renderQuizWave() {
+      if (!waveCtx || !waveCanvas) return;
+      const w = waveCanvas.width;
+      const h = waveCanvas.height;
+      const cy = h / 2;
+
+      waveCtx.clearRect(0, 0, w, h);
+      wavePhase += 0.07;
+
+      // Oscilloscope grid
+      waveCtx.strokeStyle = '#0f172a';
+      waveCtx.lineWidth = 1;
+      waveCtx.beginPath();
+      for (let x = 0; x < w; x += 24) { waveCtx.moveTo(x, 0); waveCtx.lineTo(x, h); }
+      for (let y = 0; y < h; y += 18) { waveCtx.moveTo(0, y); waveCtx.lineTo(w, y); }
+      waveCtx.stroke();
+
+      const q = QUIZ_LIST[currentQuizIndex];
+      waveCtx.lineWidth = 2;
+
+      if (q && q.waveType === 'pir') {
+        waveCtx.strokeStyle = '#38bdf8';
+        waveCtx.beginPath();
+        for (let x = 0; x < w; x++) {
+          const mod = Math.sin(x * 0.03 + wavePhase);
+          const y = cy + Math.sin(x * 0.08) * 22 * mod;
+          if (x === 0) waveCtx.moveTo(x, y);
+          else waveCtx.lineTo(x, y);
+        }
+        waveCtx.stroke();
+      } else if (q && q.waveType === 'nfc') {
+        waveCtx.strokeStyle = '#c084fc';
+        waveCtx.beginPath();
+        for (let x = 0; x < w; x++) {
+          const carrier = Math.sin(x * 0.3 + wavePhase * 3);
+          const y = cy + carrier * 25;
+          if (x === 0) waveCtx.moveTo(x, y);
+          else waveCtx.lineTo(x, y);
+        }
+        waveCtx.stroke();
+      } else {
+        waveCtx.strokeStyle = '#fbbf24';
+        waveCtx.beginPath();
+        for (let x = 0; x < w; x++) {
+          const y = cy + Math.sin(x * 0.06 + wavePhase * 2) * 24;
+          if (x === 0) waveCtx.moveTo(x, y);
+          else waveCtx.lineTo(x, y);
+        }
+        waveCtx.stroke();
+      }
+
+      requestAnimationFrame(renderQuizWave);
+    }
+
+    // DOM Setup
+    document.addEventListener('DOMContentLoaded', () => {
+      renderHuntGrid();
+      initWaveCanvas();
+
+      // Navigation Step Buttons
+      document.querySelectorAll('.step-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const s = parseInt(btn.getAttribute('data-step'), 10);
+          switchStep(s);
+        });
+      });
+
+      // Finish Hunt Button -> Go to Step 2
+      document.getElementById('finishHuntBtn').addEventListener('click', () => {
+        switchStep(2);
+      });
+
+      // Quiz Choice Buttons
+      document.querySelectorAll('.quiz-choice-btn').forEach(b => {
+        b.addEventListener('click', () => {
+          const choice = b.getAttribute('data-choice');
+          handleQuizChoice(choice);
+        });
+      });
+
+      // Next Quiz Button
+      document.getElementById('nextQuizBtn').addEventListener('click', () => {
+        if (currentQuizIndex < QUIZ_LIST.length - 1) {
+          currentQuizIndex++;
+          loadQuiz(currentQuizIndex);
+        } else {
+          switchStep(3);
+        }
+      });
+
+      // Hint Button
+      document.getElementById('giveUpHintBtn').addEventListener('click', () => {
+        HUNT_ITEMS.filter(x => x.isReal).slice(0, 3).forEach(x => selectedHunts.add(x.id));
+        renderHuntGrid();
+        playTone(620, 0.08, 'triangle');
+      });
+
+      // Student Reflection Save
+      document.getElementById('saveReflectionBtn').addEventListener('click', () => {
+        const val = document.getElementById('studentReflection').value.trim();
+        if (!val) return;
+        const toast = document.getElementById('reflectionSavedToast');
+        toast.classList.remove('hidden');
+        playSuccessChime();
+        setTimeout(() => toast.classList.add('hidden'), 3000);
+      });
+
+      // Sound Toggle
+      document.getElementById('soundToggleBtn').addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        const icon = document.getElementById('soundIcon');
+        icon.className = soundEnabled ? 'fa-solid fa-volume-high text-cyan-400' : 'fa-solid fa-volume-xmark text-slate-500';
+      });
+
+      // 60s Round 1 Timer
+      round1Interval = setInterval(() => {
+        if (round1Seconds > 0) {
+          round1Seconds--;
+          document.getElementById('round1Timer').textContent = `${round1Seconds}s`;
+          if (round1Seconds === 0) {
+            playBuzz();
+          }
+        }
+      }, 1000);
+
+      // 5-Min Master Timer
+      masterInterval = setInterval(() => {
+        if (masterSeconds > 0) {
+          masterSeconds--;
+          const m = String(Math.floor(masterSeconds / 60)).padStart(2, '0');
+          const s = String(masterSeconds % 60).padStart(2, '0');
+          document.getElementById('overallTimer').textContent = `${m}:${s}`;
+        }
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
