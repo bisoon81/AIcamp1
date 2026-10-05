@@ -3,714 +3,2471 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>신호 도둑을 찾아라! (Signal Thief : 8:20 AM)</title>
-  
-  <!-- Tailwind CSS CDN -->
+  <title>탄소포집 공장 체험 - 기후변화 솔루션 워크숍</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <!-- Fonts -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800;900&family=JetBrains+Mono:wght@600;800&display=swap">
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Pretendard', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          }
-        }
-      }
-    }
-  </script>
-
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     body {
-      background-color: #060913;
-      color: #f1f5f9;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
     }
-    .glow-cyan { filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.45)); }
-    .glow-red { filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.5)); }
-    .glow-amber { filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.45)); }
-    
-    @keyframes pulseSlow {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.85; transform: scale(0.98); }
+    canvas {
+      touch-action: none;
+      user-select: none;
     }
-    .pulse-warning { animation: pulseSlow 2s ease-in-out infinite; }
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+    }
+    .glass-dark {
+      background: rgba(15, 23, 42, 0.90);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(51, 65, 85, 0.7);
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.08); opacity: 0.4; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .slot-glow {
+      animation: pulse-ring 2s infinite ease-in-out;
+    }
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #printable-result-card, #printable-result-card * {
+        visibility: visible !important;
+      }
+      #printable-result-card {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 24px !important;
+        box-shadow: none !important;
+        border: 2px solid #047857 !important;
+        background: white !important;
+        color: black !important;
+      }
+      header, footer, nav, button, .no-print {
+        display: none !important;
+      }
+    }
   </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans selection:bg-cyan-500 selection:text-white">
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-white">
 
-  <!-- TOP BAR: 5-Minute Master Timer & Controls -->
-  <header class="sticky top-0 z-50 bg-[#060913]/95 backdrop-blur-md border-b border-slate-800 px-3.5 py-2.5 flex items-center justify-between">
-    <div class="flex items-center gap-2.5">
-      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-red-600 to-amber-600 flex items-center justify-center text-white text-sm shadow-md shadow-red-500/30">
-        <i class="fa-solid fa-satellite-dish"></i>
-      </div>
-      <div>
-        <div class="flex items-center gap-1.5">
-          <span class="text-[9px] font-mono font-bold tracking-wider uppercase px-1.5 py-0.2 rounded bg-red-950 text-red-400 border border-red-800/80">
-            5-MIN MISSION
-          </span>
-          <span class="text-[11px] text-slate-400 font-medium">등교길 신호 도둑</span>
+  <!-- 글로벌 헤더 영역 -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white text-lg font-black shadow-sm tracking-tight">
+          CO₂
         </div>
-        <h1 class="text-xs md:text-sm font-black text-white tracking-tight">신호 도둑을 찾아라!</h1>
+        <div>
+          <h1 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
+            <span>탄소포집 공장 체험</span>
+            <span class="text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 hidden sm:inline-block">기후테크 워크숍</span>
+          </h1>
+          <p class="text-[11px] sm:text-xs text-slate-500 font-medium">30초 포집 게임 ➔ 원자 결합 챌린지 ➔ 맞춤 결과 카드</p>
+        </div>
       </div>
-    </div>
-
-    <!-- Timer & Controls -->
-    <div class="flex items-center gap-2">
-      <div class="flex items-center gap-1.5 bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-lg font-mono text-xs">
-        <i class="fa-regular fa-clock text-amber-400"></i>
-        <span id="overallTimer" class="font-bold text-amber-300">05:00</span>
+      <div class="flex items-center gap-2">
+        <button id="sound-btn" onclick="toggleSound()" class="p-1.5 sm:p-2 rounded-lg border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 transition" title="효과음 켜기/끄기">
+          <i data-lucide="volume-2" id="sound-icon" class="w-4 h-4 text-emerald-600"></i>
+        </button>
+        <button onclick="resetAllStages()" class="text-xs px-2.5 py-1.5 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50 font-semibold transition-colors flex items-center gap-1">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">처음부터 다시하기</span>
+          <span class="sm:hidden">초기화</span>
+        </button>
       </div>
-      <button id="soundToggleBtn" class="w-7 h-7 rounded-lg bg-slate-900 border border-slate-800 text-cyan-400 flex items-center justify-center text-xs">
-        <i class="fa-solid fa-volume-high" id="soundIcon"></i>
-      </button>
     </div>
   </header>
 
-  <!-- STEP NAVIGATION TABS -->
-  <nav class="bg-slate-950/80 border-b border-slate-800/60 px-3 py-1.5 flex items-center justify-between gap-1 max-w-lg mx-auto w-full sticky top-[49px] z-40">
-    <button class="step-btn flex-1 py-1 px-1.5 rounded-lg text-xs font-bold border transition-all flex items-center justify-center gap-1 bg-cyan-500/20 border-cyan-400 text-cyan-300" data-step="1">
-      <span>1R. 신호 사냥</span>
-      <span id="huntCountBadge" class="text-[10px] font-mono bg-cyan-500/30 px-1 rounded-full">0/10</span>
-    </button>
-    <button class="step-btn flex-1 py-1 px-1.5 rounded-lg text-xs font-bold border transition-all flex items-center justify-center gap-1 bg-slate-900 border-slate-800 text-slate-400" data-step="2">
-      <span>2R. 3초 O/X</span>
-      <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-    </button>
-    <button class="step-btn flex-1 py-1 px-1.5 rounded-lg text-xs font-bold border transition-all flex items-center justify-center gap-1 bg-slate-900 border-slate-800 text-slate-400" data-step="3">
-      <span>3. 신호의 비밀</span>
-    </button>
-  </nav>
+  <!-- 메인 콘텐트 컨테이너 -->
+  <main class="max-w-5xl mx-auto w-full px-3 sm:px-6 py-3.5 sm:py-5 flex-grow">
 
-  <!-- MAIN VIEWPORT -->
-  <main class="flex-1 max-w-lg mx-auto w-full p-3.5 pb-16 flex flex-col gap-3.5">
-
-    <!-- ========================================================================= -->
-    <!-- STEP 1: 60초 신호 사냥 (진짜 기기 vs 가짜 함정 기기)                     -->
-    <!-- ========================================================================= -->
-    <section id="view-step1" class="step-view flex flex-col gap-3">
-      
-      <!-- Briefing Alert Card -->
-      <div class="rounded-xl bg-gradient-to-br from-red-950/70 via-slate-900 to-slate-900 border border-red-700/60 p-3.5 glow-red">
-        <div class="flex items-start gap-3">
-          <div class="w-9 h-9 rounded-lg bg-red-600/20 border border-red-500 flex-shrink-0 flex items-center justify-center text-red-400 text-base">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-          </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="text-[9px] font-mono font-bold text-red-400 uppercase tracking-wider">[긴급 상황]</span>
-              <span class="text-[11px] text-slate-400">07:00 ~ 08:20 등교길</span>
-            </div>
-            <h2 class="text-sm font-extrabold text-white mt-0.5">내 몸을 '전기신호'로 훔쳐간 기기를 색출하라!</h2>
-            <p class="text-xs text-slate-300 mt-1 leading-snug">
-              오늘 아침 내 <b>움직임·체온·압력·접촉</b>을 읽어간 기기만 빠르게 터치하세요! (가짜 함정 주의)
-            </p>
-          </div>
-        </div>
-
-        <!-- 60s Round Timer & Score -->
-        <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-xs font-mono">
-          <div class="flex items-center gap-1.5">
-            <span class="text-slate-400">제한시간:</span>
-            <span id="round1Timer" class="text-amber-400 font-extrabold text-sm">60s</span>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <span class="text-slate-400">발견율:</span>
-            <span id="huntScoreText" class="text-cyan-400 font-extrabold text-sm">0% (0개)</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Quick Search / Filter Tabs -->
-      <div class="flex items-center justify-between text-[11px] text-slate-400 px-1">
-        <span>의심 기기를 터치해 신호 압수!</span>
-        <button id="giveUpHintBtn" class="text-cyan-400 hover:underline">💡 힌트 보기</button>
-      </div>
-
-      <!-- Device Cards Grid (10 Real Devices + 4 Trap Items) -->
-      <div class="grid grid-cols-2 gap-2" id="huntGrid">
-        <!-- JS will populate interactive cards -->
-      </div>
-
-      <!-- Trap Alert Toast -->
-      <div id="trapToast" class="hidden p-2.5 rounded-lg bg-red-950 border border-red-700 text-red-200 text-xs text-center font-bold">
-        ⚠️ 탈락 후보 감지! 이것은 전기신호를 읽는 센서가 아닙니다!
-      </div>
-
-      <!-- Next Step Button -->
-      <div class="pt-2">
-        <button id="finishHuntBtn" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-xs shadow-lg shadow-cyan-600/30 flex items-center justify-center gap-2 transition-all">
-          <span>신호 사냥 완료! 2라운드 3초 팩트체크로</span>
-          <i class="fa-solid fa-arrow-right"></i>
+    <!-- 단계 진행 탭 바 -->
+    <nav class="bg-white rounded-2xl p-1.5 sm:p-2 border border-slate-200 shadow-xs mb-4 sm:mb-5">
+      <div class="grid grid-cols-3 gap-1 sm:gap-2">
+        <button id="step-tab-1" onclick="switchStep(1)" class="py-2.5 px-2 rounded-xl text-center font-bold text-xs sm:text-sm transition-all bg-emerald-600 text-white shadow-xs flex items-center justify-center gap-1.5">
+          <span class="w-5 h-5 rounded-full bg-white/20 text-white flex items-center justify-center text-[11px]">1</span>
+          <span>30초 포집 게임</span>
+        </button>
+        <button id="step-tab-2" onclick="switchStep(2)" class="py-2.5 px-2 rounded-xl text-center font-semibold text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-100 flex items-center justify-center gap-1.5">
+          <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-[11px]">2</span>
+          <span>보낼 곳 & 결합 게임</span>
+        </button>
+        <button id="step-tab-3" onclick="switchStep(3)" class="py-2.5 px-2 rounded-xl text-center font-semibold text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-100 flex items-center justify-center gap-1.5">
+          <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-[11px]">3</span>
+          <span>내 결과 카드</span>
         </button>
       </div>
+    </nav>
 
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- STEP 2: 3초 컷 O/X 밸런스 퀴즈 (3문항)                                    -->
-    <!-- ========================================================================= -->
-    <section id="view-step2" class="step-view hidden flex flex-col gap-3.5">
-      
-      <!-- Quiz Progress Bar -->
-      <div class="flex items-center justify-between text-xs font-mono px-1">
-        <span class="text-amber-400 font-bold">ROUND 2: 진짜 신호 vs 가짜 신호</span>
-        <span id="quizIndexText" class="text-slate-400">1 / 3</span>
-      </div>
-
-      <!-- Question Card Container -->
-      <div id="quizContainer" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col gap-3">
+    <!-- ============================================== -->
+    <!-- [1단계] 포집 방식 고르기 & 30초 미니게임 체험 -->
+    <!-- ============================================== -->
+    <section id="step-section-1" class="space-y-4">
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs">
         
-        <!-- Badge & Question Title -->
-        <div>
-          <div class="flex items-center justify-between">
-            <span id="quizBadge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
-              Q1. 현관 센서등
+        <div class="border-b border-slate-100 pb-3 mb-4">
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 mb-1.5">
+            STEP 1 · 실시간 농도 체감 미니게임 (30초)
+          </div>
+          <h2 class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight">
+            포집 방식을 고르고, 30초 동안 직접 화면을 터치해 CO₂를 흡수해 보세요!
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-500 mt-1">
+            배출가스(약 4~15%)와 일반 공기(약 0.04%)에서 CO₂를 잡을 때 어떤 차이가 나는지 직접 손끝으로 느껴보세요.
+          </p>
+        </div>
+
+        <!-- 두 가지 포집 방식 선택 카드 그리드 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4 mb-4">
+          
+          <!-- 배출원 포집 카드 -->
+          <div id="method-card-points" onclick="selectCaptureMethod('points')" class="relative border-2 border-emerald-500 bg-emerald-50/50 rounded-2xl p-4 sm:p-5 cursor-pointer transition-all duration-200 hover:shadow-md">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-2xl sm:text-3xl">🏭</span>
+                <h3 class="font-extrabold text-slate-900 text-base sm:text-lg mt-1">배출원 포집 (Point Source)</h3>
+                <p class="text-xs text-emerald-700 font-semibold">공장 굴뚝, 발전소 배출가스 직통</p>
+              </div>
+              <span id="badge-points" class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-600 text-white">선택됨</span>
+            </div>
+            <div class="mt-3 bg-white/95 rounded-xl p-3 border border-emerald-200 text-xs space-y-1.5 shadow-2xs">
+              <div class="flex justify-between font-semibold">
+                <span class="text-slate-500">배출가스 CO₂ 농도</span>
+                <span class="text-emerald-700 font-extrabold text-sm">약 4 ~ 15% (초고농도)</span>
+              </div>
+              <div class="flex justify-between text-slate-500 text-[11px]">
+                <span>화면 속 CO₂ 비율</span>
+                <span class="font-bold text-emerald-800">화면 가득 CO₂ 입자가 바글바글!</span>
+              </div>
+              <p class="text-[11px] text-slate-600 pt-1 border-t border-slate-100 leading-snug">
+                굴뚝에서 CO₂가 쏟아져 나와 손가락으로 쓱 문지르기만 해도 대량으로 쉽게 포집됩니다.
+              </p>
+            </div>
+          </div>
+
+          <!-- DAC 카드 -->
+          <div id="method-card-dac" onclick="selectCaptureMethod('dac')" class="relative border-2 border-slate-200 bg-slate-50/60 rounded-2xl p-4 sm:p-5 cursor-pointer transition-all duration-200 hover:border-teal-400 hover:bg-teal-50/30">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-2xl sm:text-3xl">🌬️</span>
+                <h3 class="font-extrabold text-slate-900 text-base sm:text-lg mt-1">직접 공기 포집 (DAC)</h3>
+                <p class="text-xs text-teal-700 font-semibold">대기 중 흩어진 공기 직접 흡입</p>
+              </div>
+              <span id="badge-dac" class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-slate-200 text-slate-600 hidden">선택됨</span>
+            </div>
+            <div class="mt-3 bg-white/95 rounded-xl p-3 border border-slate-200 text-xs space-y-1.5 shadow-2xs">
+              <div class="flex justify-between font-semibold">
+                <span class="text-slate-500">대기 중 CO₂ 농도</span>
+                <span class="text-teal-700 font-extrabold text-sm">약 0.04% (매우 희박)</span>
+              </div>
+              <div class="flex justify-between text-slate-500 text-[11px]">
+                <span>화면 속 CO₂ 비율</span>
+                <span class="font-bold text-rose-600">99.96% 질소·산소 속 드물게 출현!</span>
+              </div>
+              <p class="text-[11px] text-slate-600 pt-1 border-t border-slate-100 leading-snug">
+                주변이 온통 질소(N₂)·산소(O₂)뿐이라, 눈을 크게 뜨고 귀한 CO₂ 분자만 콕콕 찾아내야 합니다.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 10초 터치 포집 게임 존 -->
+        <div class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white rounded-2xl p-4 sm:p-5 shadow-lg border border-slate-800">
+          
+          <!-- 상단 대시보드 HUD -->
+          <div class="flex flex-wrap items-center justify-between gap-2.5 pb-3 border-b border-slate-800">
+            <div class="flex items-center gap-2">
+              <span id="game-status-dot" class="w-3 h-3 rounded-full bg-emerald-400"></span>
+              <div>
+                <h3 id="game-mode-title" class="font-black text-sm sm:text-base text-slate-100">
+                  배출원 포집 (농도 15%): 고농도 가스 방출 중
+                </h3>
+                <p id="game-instruction" class="text-[11px] text-slate-400">
+                  [30초 포집 게임 시작!] 버튼을 누르고 화면의 초록색 CO₂ 입자를 터치·드래그해 흡수하세요!
+                </p>
+              </div>
+            </div>
+            
+            <button id="btn-start-game" onclick="startGame()" class="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black rounded-xl text-xs sm:text-sm transition-all shadow-md active:scale-95 flex items-center gap-2">
+              <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+              <span id="btn-start-label">30초 포집 게임 시작!</span>
+            </button>
+          </div>
+
+          <!-- 실시간 게이지 스코어바 -->
+          <div class="grid grid-cols-3 gap-2.5 my-3">
+            <div class="bg-slate-900/90 rounded-xl p-2.5 border border-slate-800 text-center">
+              <span class="text-[10px] text-slate-400 block font-semibold">남은 시간</span>
+              <div class="text-xl sm:text-2xl font-black text-amber-400 font-mono">
+                <span id="game-timer">30.0</span><span class="text-xs font-normal text-slate-400">초</span>
+              </div>
+              <div class="w-full bg-slate-800 rounded-full h-1 mt-1 overflow-hidden">
+                <div id="game-timer-bar" class="bg-amber-400 h-full w-full transition-all duration-75"></div>
+              </div>
+            </div>
+
+            <div class="bg-slate-900/90 rounded-xl p-2.5 border border-slate-800 text-center">
+              <span class="text-[10px] text-slate-400 block font-semibold">내가 포집한 CO₂ 양</span>
+              <div class="text-xl sm:text-2xl font-black text-emerald-400 font-mono">
+                <span id="game-score">0</span> <span class="text-xs font-normal text-slate-400">kg</span>
+              </div>
+              <div class="w-full bg-slate-800 rounded-full h-1 mt-1 overflow-hidden">
+                <div id="game-score-bar" class="bg-emerald-400 h-full w-0 transition-all duration-100"></div>
+              </div>
+            </div>
+
+            <div class="bg-slate-900/90 rounded-xl p-2.5 border border-slate-800 text-center">
+              <span class="text-[10px] text-slate-400 block font-semibold">잡은 분자 수</span>
+              <div class="text-xl sm:text-2xl font-black text-teal-300 font-mono">
+                <span id="game-hits">0</span><span class="text-xs font-normal text-slate-400">개</span>
+              </div>
+              <div class="text-[10px] text-slate-400 mt-1 truncate" id="game-rate-badge">
+                준비 상태
+              </div>
+            </div>
+          </div>
+
+          <!-- 터치/클릭 인터랙티브 캔버스 뷰포트 -->
+          <div class="relative w-full h-64 sm:h-72 rounded-xl overflow-hidden border border-slate-700 bg-slate-950 flex items-center justify-center cursor-crosshair">
+            <canvas id="game-canvas" class="w-full h-full block"></canvas>
+            
+            <!-- 게임 시작 전 안내 오버레이 -->
+            <div id="game-overlay-intro" class="absolute inset-0 bg-slate-950/75 backdrop-blur-[2px] flex flex-col items-center justify-center p-4 text-center">
+              <span class="text-3xl sm:text-4xl mb-2">🎯</span>
+              <h4 id="overlay-intro-title" class="text-base sm:text-lg font-black text-white">
+                화면을 터치해서 CO₂ 분자를 직접 포집하세요!
+              </h4>
+              <p id="overlay-intro-desc" class="text-xs text-slate-300 max-w-md mt-1 leading-relaxed">
+                배출원 포집은 CO₂가 빽빽하게 쏟아져 나와 마구잡이로 쓸어 담을 수 있습니다. 상단의 [30초 포집 게임 시작!] 버튼을 눌러보세요!
+              </p>
+            </div>
+
+            <!-- 게임 종료 결과 오버레이 -->
+            <div id="game-overlay-result" class="hidden absolute inset-0 bg-slate-950/85 backdrop-blur-xs flex flex-col items-center justify-center p-4 text-center">
+              <span id="result-emoji" class="text-4xl mb-1">🎉</span>
+              <h4 id="result-title" class="text-lg font-black text-white">30초 포집 완료!</h4>
+              <p id="result-summary" class="text-xs sm:text-sm text-emerald-400 font-bold mt-1">
+                총 1,600 kg의 CO₂를 흡착했습니다!
+              </p>
+              <p id="result-detail" class="text-[11px] text-slate-300 max-w-md mt-1.5 leading-relaxed">
+                배출가스는 농도가 진해 빠르게 쓸어 담을 수 있었습니다!
+              </p>
+              <div class="flex items-center gap-2 mt-3.5">
+                <button onclick="startGame()" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-600">
+                  다시 도전하기 🔄
+                </button>
+                <button onclick="switchStep(2)" class="px-4 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold flex items-center gap-1">
+                  <span>2단계로 이동</span>
+                  <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- 조작 팁 안내 -->
+          <div class="mt-2.5 flex items-center justify-between text-[11px] text-slate-400 px-1">
+            <span class="flex items-center gap-1">
+              <span>👆</span> <span class="hidden sm:inline">스마트폰·태블릿: 화면을 터치하거나 문지르기 / PC: 마우스 클릭 및 드래그</span>
+              <span class="sm:hidden">화면을 탭하거나 손가락으로 쓸어 넘기세요!</span>
             </span>
-            <span id="quizCategory" class="text-xs text-slate-400 font-medium">체온과 적외선</span>
+            <span id="canvas-density-info" class="text-emerald-400 font-semibold font-mono">
+              CO₂ 농도: 15% (매우 진함)
+            </span>
           </div>
-          <h3 id="quizQuestion" class="text-sm md:text-base font-extrabold text-white mt-1.5 leading-snug">
-            센서등 아래에서 로봇처럼 완전히 가만히 멈춰 서 있으면 불이 켜져 있을까, 꺼질까?
-          </h3>
+
         </div>
 
-        <!-- Visual / Interactive Simulator Preview Box -->
-        <div id="quizVisualBox" class="h-28 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-center p-3 relative overflow-hidden">
-          <canvas id="quizWaveCanvas" class="w-full h-full block"></canvas>
-          <div id="quizVisualBadge" class="absolute bottom-1.5 right-2 text-[10px] font-mono text-cyan-400/80 bg-slate-900/80 px-2 py-0.5 rounded">
-            초전소자 차동전압: 감지 중
+        <!-- 핵심 교육 배너 -->
+        <div class="mt-4 bg-emerald-50 rounded-xl p-3.5 border border-emerald-200 flex items-start gap-2.5">
+          <span class="text-xl shrink-0">💡</span>
+          <div class="text-xs sm:text-sm text-emerald-950 leading-relaxed">
+            <span class="font-extrabold text-emerald-900">[학생이 알게 되는 점]</span>
+            <strong> 배출가스는 공기보다 CO₂가 훨씬 진해서(약 4~15%) 손쉽게 대량 포집이 가능해요.</strong>
+            반면 <strong>DAC(직접 공기 포집)</strong>는 공기 중 농도가 <strong>약 0.04%</strong>로 질소·산소 사이에 숨어있어 찾기 힘들고 느리지만, <strong>이미 공기 중에 흩어져 버린 CO₂를 줄일 수 있는 소중한 방법</strong>이에요!
           </div>
         </div>
 
-        <!-- Choice Buttons (O / X) -->
-        <div class="grid grid-cols-2 gap-2.5 pt-1" id="quizButtons">
-          <button class="quiz-choice-btn py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-black text-base border border-slate-700 active:scale-95 transition-all flex items-center justify-center gap-2" data-choice="O">
-            <i class="fa-regular fa-circle-check text-cyan-400"></i>
-            <span id="choiceLabelO">켜져 있다</span>
-          </button>
-          <button class="quiz-choice-btn py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-black text-base border border-slate-700 active:scale-95 transition-all flex items-center justify-center gap-2" data-choice="X">
-            <i class="fa-regular fa-circle-xmark text-red-400"></i>
-            <span id="choiceLabelX">꺼진다!</span>
+        <!-- 2단계 이동 버튼 -->
+        <div class="mt-5 flex justify-end">
+          <button onclick="switchStep(2)" class="w-full sm:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2">
+            <span>2단계: 보낼 곳 & 결합 게임 하러 가기</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
         </div>
-
-        <!-- Feedback & Scientific Principle (Revealed after click) -->
-        <div id="quizFeedbackBox" class="hidden rounded-xl p-3 border text-xs leading-relaxed transition-all">
-          <div class="flex items-center gap-1.5 font-bold mb-1" id="quizFeedbackTitle">
-            <!-- JS inserts correct / incorrect icon -->
-          </div>
-          <p id="quizFeedbackContent" class="text-slate-200 text-[11px]"></p>
-        </div>
-
-        <!-- Next Question Button -->
-        <button id="nextQuizBtn" class="hidden w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs transition-all flex items-center justify-center gap-2">
-          <span>다음 문제 풀기</span>
-          <i class="fa-solid fa-arrow-right"></i>
-        </button>
 
       </div>
-
     </section>
 
-    <!-- ========================================================================= -->
-    <!-- STEP 3: 신호의 비밀 & 탐정 등급 배지 (본시 착륙)                          -->
-    <!-- ========================================================================= -->
-    <section id="view-step3" class="step-view hidden flex flex-col gap-3.5">
-      
-      <!-- Core Insight Banner -->
-      <div class="rounded-2xl bg-gradient-to-br from-cyan-950/80 via-slate-900 to-purple-950/80 border border-cyan-500/40 p-4 text-center glow-cyan">
-        <div class="w-12 h-12 rounded-xl bg-cyan-500/20 border border-cyan-400 mx-auto flex items-center justify-center text-cyan-300 text-xl mb-2.5">
-          <i class="fa-solid fa-bolt-lightning"></i>
+    <!-- ============================================== -->
+    <!-- [2단계] 보낼 곳 정하기 & 탄소 분자 결합 게임 -->
+    <!-- ============================================== -->
+    <section id="step-section-2" class="hidden space-y-4">
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs">
+        
+        <div class="border-b border-slate-100 pb-3 mb-4">
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-teal-100 text-teal-800 mb-1.5">
+            STEP 2 · 탄소의 운명 결정 & 원자 결합 챌린지
+          </div>
+          <h2 class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight">
+            포집한 이산화탄소를 어디로 보낼까요?
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-500 mt-1">
+            지하 깊은 곳에 가두는 <strong>저장(CCS)</strong>과 원자를 결합해 새로운 자원으로 바꾸는 <strong>활용(CCU)</strong> 중 선택하세요.
+          </p>
         </div>
-        <span class="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-wider">오늘의 핵심 통찰</span>
-        <h2 class="text-sm md:text-base font-black text-white mt-1 leading-snug">
-          "전기는 단순히 선풍기를 돌리는 에너지가 아니라,<br>
-          세상을 관찰하고 판단하는 <span class="text-cyan-400 underline underline-offset-4">‘정보의 언어’</span>다!"
-        </h2>
-        <p class="text-[11px] text-slate-300 mt-2 leading-relaxed">
-          오늘 아침 여러분의 <b>체온, 발걸음 속도, 손가락 터치, 통과 각도</b>는 단 1초도 쉬지 않고 전기신호로 번역되어 도시를 움직였습니다.
-        </p>
-      </div>
 
-      <!-- Student Detective Badge Card -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 flex items-center gap-3">
-        <div class="w-12 h-12 rounded-xl bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center text-amber-300 text-xl flex-shrink-0">
-          <i class="fa-solid fa-award"></i>
-        </div>
-        <div>
-          <span class="text-[10px] font-mono text-slate-400 block">MY SIGNAL DETECTIVE RANK</span>
-          <h3 id="detectiveRankTitle" class="text-sm font-extrabold text-white">1급 신호 보안관 (탐정 등급: A+)</h3>
-          <p id="detectiveRankDesc" class="text-[11px] text-slate-400 mt-0.5">신호 사냥 10개 색출 성공 / 퀴즈 3문항 정답</p>
-        </div>
-      </div>
+        <!-- 대분류 선택: 영구 저장 vs 화학적 활용 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-5">
+          
+          <!-- 지하 저장 카드 -->
+          <div id="dest-card-storage" onclick="selectDestinationCategory('storage')" class="border-2 border-slate-200 bg-slate-50 rounded-2xl p-4 sm:p-5 cursor-pointer transition-all hover:border-slate-400">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-xl bg-slate-800 text-white flex items-center justify-center text-xl font-bold">
+                  🪨
+                </div>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-base sm:text-lg">저장 (CCS)</h3>
+                  <span class="text-xs text-slate-500 font-medium">지하 깊은 염수층·고갈 유전</span>
+                </div>
+              </div>
+              <span id="badge-dest-storage" class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-slate-200 text-slate-600 hidden">선택됨</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-3 leading-relaxed">
+              붙잡은 CO₂를 고압으로 압축해 지하 1~2km 아래 단단한 덮개암 아래에 영구히 가둡니다. 대기 중에서 탄소를 완전히 격리할 수 있습니다.
+            </p>
+            <div class="mt-3 pt-2 border-t border-slate-200 flex items-center text-xs text-slate-500 font-semibold">
+              <span>🔒 특징: 영구 격리 · 대규모 안전 저장</span>
+            </div>
+          </div>
 
-      <!-- 1-Line Student Reflection -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 flex flex-col gap-2">
-        <label class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
-          <i class="fa-solid fa-pen-nib text-cyan-400"></i>
-          <span>오늘 등교길에서 가장 신기했던 '신호 도둑'은?</span>
-        </label>
-        <div class="flex gap-2">
-          <input type="text" id="studentReflection" placeholder="예: 멈추면 꺼지는 센서등의 초전소자가 신기했다!" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-cyan-400">
-          <button id="saveReflectionBtn" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition-colors whitespace-nowrap">
-            등록
+          <!-- 자원화 활용 카드 -->
+          <div id="dest-card-utilization" onclick="selectDestinationCategory('utilization')" class="border-2 border-emerald-500 bg-emerald-50/60 rounded-2xl p-4 sm:p-5 cursor-pointer transition-all hover:shadow-md">
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xl font-bold">
+                  🧬
+                </div>
+                <div>
+                  <h3 class="font-extrabold text-slate-900 text-base sm:text-lg">활용 (CCU)</h3>
+                  <span class="text-xs text-emerald-700 font-semibold">제품 분자로 화학적 합성</span>
+                </div>
+              </div>
+              <span id="badge-dest-utilization" class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-600 text-white">선택됨</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-3 leading-relaxed">
+              붙잡은 CO₂를 수소 등과 반응시켜 플라스틱, 청정 연료, 정밀 화학제품으로 재탄생시킵니다. 석유화학 물질을 대체할 수 있습니다.
+            </p>
+            <div class="mt-3 pt-2 border-t border-emerald-200 flex items-center text-xs text-emerald-800 font-bold">
+              <span>♻️ 특징: 원자 결합 챌린지 ➔ 6대 탄소 자원 전환</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- CCU 선택 시 활성화되는 '탄소 원자 결합 게임 존' (통합) -->
+        <!-- ======================================================== -->
+        <div id="craft-game-section" class="space-y-4">
+          
+          <!-- 미션 및 원자 필요 현황 상단 바 -->
+          <div class="glass-dark rounded-2xl p-3 sm:p-4 flex flex-col md:flex-row items-center justify-between gap-3 text-white border border-slate-800 shadow-md">
+            <div class="flex items-center gap-2.5 sm:gap-3 w-full md:w-auto">
+              <span id="craft-stage-badge" class="px-2.5 py-1 rounded-lg text-xs font-black bg-emerald-600 text-white shrink-0">
+                스테이지 1 / 6
+              </span>
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <h3 class="text-sm sm:text-base font-extrabold text-slate-100 flex items-center gap-1.5 truncate">
+                    미션: <span id="craft-target-name" class="text-emerald-400 font-black text-base sm:text-lg">에틸렌</span>
+                    <span id="craft-target-formula" class="text-teal-300 font-mono text-sm">(C₂H₄)</span>
+                  </h3>
+                </div>
+                <p id="craft-target-hint" class="text-[11px] sm:text-xs text-slate-300 truncate mt-0.5">
+                  플라스틱 제품, 합성섬유, 포장재의 핵심 원료
+                </p>
+              </div>
+            </div>
+
+            <!-- 원자 필요 개수 카운터 -->
+            <div class="flex items-center gap-2 bg-slate-950/80 px-3 py-1.5 rounded-xl border border-slate-800 shrink-0 self-end md:self-auto">
+              <div class="flex items-center gap-1 px-1">
+                <span class="w-3.5 h-3.5 rounded-full bg-slate-800 border border-slate-400 inline-block shadow-sm"></span>
+                <span class="text-xs font-bold text-slate-300">C:</span>
+                <span id="craft-c-badge" class="text-xs font-bold text-emerald-400 font-mono">0 / 2</span>
+              </div>
+              <div class="flex items-center gap-1 px-1 border-l border-slate-800">
+                <span class="w-3.5 h-3.5 rounded-full bg-slate-100 border border-slate-300 inline-block shadow-sm"></span>
+                <span class="text-xs font-bold text-slate-300">H:</span>
+                <span id="craft-h-badge" class="text-xs font-bold text-emerald-400 font-mono">0 / 4</span>
+              </div>
+              <div class="flex items-center gap-1 px-1 border-l border-slate-800">
+                <span class="w-3.5 h-3.5 rounded-full bg-rose-500 border border-rose-300 inline-block shadow-sm"></span>
+                <span class="text-xs font-bold text-slate-300">O:</span>
+                <span id="craft-o-badge" class="text-xs font-bold text-emerald-400 font-mono">0 / 0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 분자 결합 드래그 앤 드롭 캔버스 컨테이너 -->
+          <div class="relative w-full h-80 sm:h-96 rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl flex flex-col">
+            <canvas id="craft-canvas" class="w-full h-full cursor-grab active:cursor-grabbing block"></canvas>
+
+            <!-- 캔버스 좌상단 가이드 오버레이 -->
+            <div class="absolute top-2.5 left-2.5 pointer-events-none bg-slate-900/90 backdrop-blur-sm border border-slate-800 text-slate-300 text-[11px] sm:text-xs px-2.5 py-1 rounded-lg flex items-center gap-1.5 shadow-lg">
+              <i data-lucide="hand" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
+              <span>떨어지는 원자(C, H, O)를 끌어다 맞는 빈 슬롯에 쏙 끼우세요!</span>
+            </div>
+
+            <!-- 캔버스 우상단 초기화 버튼 -->
+            <button onclick="resetCraftMoleculeSlots()" class="absolute top-2.5 right-2.5 z-10 px-2.5 py-1 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white text-[11px] sm:text-xs flex items-center gap-1 shadow-lg transition active:scale-95" title="슬롯 초기화">
+              <i data-lucide="rotate-ccw" class="w-3 h-3 text-slate-400"></i>
+              <span>슬롯 초기화</span>
+            </button>
+
+            <!-- 분자 결합 성공 배너 오버레이 (스테이지별/최종완료 분기) -->
+            <div id="craft-complete-banner" class="absolute inset-0 bg-slate-950/85 backdrop-blur-sm flex flex-col items-center justify-center p-4 text-center z-20 hidden transition-all duration-300">
+              <div class="glass-panel p-5 sm:p-7 rounded-3xl max-w-md w-full border-2 border-emerald-400 shadow-2xl animate-fade-in text-slate-800">
+                <div id="banner-icon-box" class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 border border-emerald-300 mx-auto flex items-center justify-center mb-2.5 shadow-md">
+                  <i data-lucide="sparkles" class="w-7 h-7"></i>
+                </div>
+                <span id="banner-badge" class="text-xs font-black tracking-wider text-emerald-800 bg-emerald-100 px-3 py-0.5 rounded-full uppercase">
+                  스테이지 클리어 (1 / 6)
+                </span>
+                <h3 id="banner-title" class="text-lg sm:text-xl font-black text-slate-900 mt-2 mb-1">
+                  <span id="banner-mol-name" class="text-emerald-700">에틸렌</span> 결합 완성!
+                </h3>
+                <p id="banner-desc" class="text-xs text-slate-600 leading-relaxed mb-4">
+                  원자 결합이 완벽하게 이루어졌습니다!<br>
+                  분자 구조 상세 정보를 확인해 보세요.
+                </p>
+
+                <div class="flex flex-col gap-2" id="banner-btn-area">
+                  <button id="btn-show-structure-info" onclick="triggerStructureModalNow()" class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md flex items-center justify-center gap-1.5 transition active:scale-98">
+                    <i data-lucide="microscope" class="w-4 h-4"></i>
+                    <span>지금 바로 구조 분석 보기</span>
+                  </button>
+                  <button id="btn-next-mol-stage" onclick="goToNextMoleculeStage()" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md flex items-center justify-center gap-1.5 transition">
+                    <span>다음 분자 합성하기</span>
+                    <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ============================================== -->
+          <!-- 6종 분자 진행 및 최종 선택 패널 -->
+          <!-- ============================================== -->
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-xs space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-slate-200 pb-3">
+              <div>
+                <h3 class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center gap-1.5">
+                  <span>🧪</span> <span>6대 탄소 화합물 합성 진행 현황</span>
+                  <span id="all-completed-tag" class="hidden text-xs bg-emerald-100 text-emerald-800 font-black px-2 py-0.5 rounded-full">🎉 6종 전원 완성! 최종 선택 가능</span>
+                </h3>
+                <p id="cards-guide-text" class="text-xs text-slate-500">
+                  각 분자를 차례대로 합성하세요. 합성을 완료한 분자는 언제든지 클릭해 최종 제작 분자로 선택할 수 있습니다.
+                </p>
+              </div>
+              <span class="text-[11px] font-semibold text-slate-600 bg-white px-2.5 py-1 rounded-lg border border-slate-200 shadow-2xs self-start sm:self-auto">
+                원소 색상: 탄소(검정 C) · 산소(빨강 O) · 수소(흰색 H)
+              </span>
+            </div>
+
+            <!-- 분자 6종 카드 그리드 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1" id="molecule-cards-container">
+              <!-- JS 동적 렌더링 -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 핵심 배너 (학생이 알게 되는 것) -->
+        <div class="mt-4 bg-teal-50 rounded-xl p-3.5 border border-teal-200 flex items-start gap-2.5">
+          <span class="text-xl shrink-0">💡</span>
+          <div class="text-xs sm:text-sm text-teal-950 leading-relaxed">
+            <span class="font-extrabold text-teal-900">[학생이 알게 되는 것]</span>
+            <strong> 저장은 지하에 오래 가두고, 활용은 자원으로 바꿔요.</strong> 
+            하지만 플라스틱이나 신소재(그래핀)는 탄소를 오랫동안 묶어두는 반면, <strong>연료(에탄올, 메탄올, 부탄올 등)로 태워 쓰면 CO₂가 공기 중으로 다시 나올 수 있다</strong>는 점도 꼭 기억하세요!
+          </div>
+        </div>
+
+        <!-- 하단 이동 버튼군 -->
+        <div class="mt-5 flex flex-col-reverse sm:flex-row justify-between gap-2.5">
+          <button onclick="switchStep(1)" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-semibold hover:bg-slate-100 transition-colors">
+            ← 1단계 포집 게임으로 돌아가기
+          </button>
+          <button id="btn-goto-step3" onclick="handleGoToStep3Click()" class="px-6 py-2.5 bg-slate-200 text-slate-400 font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-not-allowed">
+            <span id="btn-goto-step3-text">3단계: 6개 합성 완료 후 분자 선택 (0 / 6)</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
           </button>
         </div>
-        <p id="reflectionSavedToast" class="text-[11px] text-emerald-400 font-bold hidden">✓ 한 줄 소감이 저장되었습니다! 본시 수업으로 진입하세요.</p>
+
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- [3단계] 내 결과 카드 & 기록지 작성 안내 -->
+    <!-- ============================================== -->
+    <section id="step-section-3" class="hidden space-y-4">
+      
+      <!-- 인쇄 및 저장 가능한 결과 카드 본체 -->
+      <div id="printable-result-card" class="bg-white rounded-3xl border-2 border-emerald-600 p-5 sm:p-7 shadow-lg">
+        
+        <!-- 카드 상단 헤더 -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-emerald-100 pb-4 gap-2">
+          <div>
+            <span class="text-xs font-black tracking-widest text-emerald-700 uppercase">Carbon Capture & Utilization Certificate</span>
+            <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mt-0.5">
+              나의 이산화탄소(CO₂) 여정 보고서
+            </h2>
+          </div>
+          <div class="flex items-center gap-2">
+            <label for="student-name-input" class="text-xs font-bold text-slate-600 shrink-0">학생 이름:</label>
+            <input type="text" id="student-name-input" placeholder="이름을 입력하세요" class="border border-slate-300 rounded-lg px-2.5 py-1 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 w-32 sm:w-36 bg-slate-50">
+          </div>
+        </div>
+
+        <!-- CO2 흐름 파이프라인 요약 -->
+        <div class="my-5 bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 rounded-2xl p-4 sm:p-5 border border-emerald-200">
+          <div class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2">내 CO₂ 경로 요약</div>
+          
+          <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+            
+            <!-- 포집 단계 -->
+            <div class="flex-1 bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs">
+              <span class="text-[11px] text-slate-500 font-bold block">1단계 포집 체험</span>
+              <span id="card-capture-title" class="font-extrabold text-sm sm:text-base text-slate-900 block mt-0.5">배출원 포집 (공장/발전소)</span>
+              <span id="card-capture-conc" class="text-[11px] font-semibold text-emerald-700 block">농도: 약 4~15% (고속 대량 포집)</span>
+              <span id="card-capture-stat" class="text-[10px] text-slate-400 mt-1 block">30초 포집 완료</span>
+            </div>
+
+            <!-- 화살표 -->
+            <div class="hidden md:flex text-slate-400 font-black text-xl px-1">➔</div>
+            <div class="md:hidden flex justify-center text-slate-400 font-black text-sm my-0.5">↓</div>
+
+            <!-- 운명/경로 단계 -->
+            <div class="flex-1 bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs">
+              <span class="text-[11px] text-slate-500 font-bold block">2단계 보낼 곳</span>
+              <span id="card-dest-title" class="font-extrabold text-sm sm:text-base text-slate-900 block mt-0.5">자원화 활용 (CCU)</span>
+              <span id="card-dest-desc" class="text-[11px] font-semibold text-teal-700 block">새로운 화학 분자로 결합</span>
+            </div>
+
+            <!-- 화살표 -->
+            <div class="hidden md:flex text-slate-400 font-black text-xl px-1">➔</div>
+            <div class="md:hidden flex justify-center text-slate-400 font-black text-sm my-0.5">↓</div>
+
+            <!-- 최종 산출물 단계 -->
+            <div class="flex-1 bg-white p-3.5 rounded-xl border-2 border-emerald-500 shadow-2xs">
+              <span class="text-[11px] text-emerald-700 font-bold block">3단계 최종 산출 분자</span>
+              <div class="flex items-baseline gap-1.5 mt-0.5">
+                <span id="card-mol-name" class="font-black text-base sm:text-lg text-emerald-950">에틸렌</span>
+                <span id="card-mol-formula" class="font-mono font-bold text-xs text-emerald-600">C₂H₄</span>
+              </div>
+              <span id="card-kit-status" class="text-[10px] font-extrabold text-white bg-emerald-600 px-1.5 py-0.5 rounded inline-block mt-1">
+                키트 모형 제작 가능 🧬
+              </span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 분자 세부 화학 정보 및 키트 제작 가이드 -->
+        <div id="card-mol-detail-box" class="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs">
+          
+          <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-200">
+            <h4 class="font-bold text-slate-900 mb-1.5 flex items-center gap-1.5">
+              <span>🔬</span> <span>분자 결합 & 원소 구성</span>
+            </h4>
+            <div class="space-y-1 text-slate-600">
+              <p><strong class="text-slate-800">화학식:</strong> <span id="card-detail-formula" class="font-mono text-emerald-700 font-bold">C₂H₄</span></p>
+              <p><strong class="text-slate-800">원소 구성:</strong> <span id="card-detail-atoms">탄소(검정) 2개 + 수소(흰색) 4개</span></p>
+              <p><strong class="text-slate-800">주요 용도:</strong> <span id="card-detail-usage">플라스틱, 합성섬유, 포장재 등</span></p>
+              <p><strong class="text-slate-800">제품 분류:</strong> <span id="card-detail-tag" class="text-emerald-800 font-semibold">플라스틱 제품 · 섬유 · 포장재</span></p>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-200">
+            <h4 class="font-bold text-slate-900 mb-1.5 flex items-center gap-1.5">
+              <span>🌱</span> <span>탄소 순환 & 환경적 의미</span>
+            </h4>
+            <div class="space-y-1 text-slate-600">
+              <p><strong class="text-slate-800">탄소의 행방:</strong> <span id="card-detail-fate">플라스틱·섬유 제품으로 오랜 기간 고정</span></p>
+              <p><strong class="text-slate-800">모형 조립:</strong> <span id="card-detail-kit-desc">키트의 검정색 탄소 구와 흰색 수소 구를 조립하세요.</span></p>
+              <p class="text-[11px] text-slate-500 pt-1 border-t border-slate-200">
+                연료로 쓰이는 분자는 연소 시 대기로 재방출되지만, 플라스틱이나 건축자재, 신소재는 오랫동안 탄소를 보관합니다.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 슬라이드 학습 가이드 -->
+        <div class="mt-4 bg-emerald-50 rounded-xl p-3 border border-emerald-300 text-xs text-emerald-950 flex items-start gap-2">
+          <span class="text-base shrink-0">📝</span>
+          <div>
+            <strong>[기록지 작성 안내]</strong> 이 카드의 내용을 <strong>기록지 앞면에 옮겨 적고</strong>, 고른 분자를 <strong>분자 모형 키트로 직접 조립</strong>해 보세요!
+          </div>
+        </div>
+
       </div>
 
-      <!-- Teacher Transition Script -->
-      <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-3 flex items-start gap-2.5">
-        <i class="fa-solid fa-chalkboard-user text-purple-400 text-sm mt-0.5"></i>
-        <p class="text-[11px] text-slate-300 leading-relaxed">
-          <b class="text-white">교사용 수업 착륙 스크립트:</b><br>
-          "자, 이제 일상 속 숨겨진 신호들을 직접 목격했습니다. 그렇다면 이 센서들이 만든 미세한 전기신호가 어떻게 도시 전력망을 지탱하고, 전기차를 멈추며, 인간의 뇌파까지 해석하는지 지금부터 본시 교안으로 확인해 봅시다!"
-        </p>
+      <!-- 하단 기능 버튼 (인쇄, 텍스트 복사, 이전 단계) -->
+      <div class="flex flex-wrap items-center justify-between gap-2.5 pt-2">
+        <button onclick="switchStep(2)" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-semibold hover:bg-slate-50 text-xs sm:text-sm">
+          ← 2단계로 돌아가서 수정하기
+        </button>
+
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <button onclick="copySummaryText()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm transition-colors flex items-center justify-center gap-1.5 shadow-xs">
+            <i data-lucide="copy" class="w-4 h-4"></i>
+            <span>결과 텍스트 복사</span>
+          </button>
+          <button onclick="window.print()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm transition-colors flex items-center justify-center gap-1.5 shadow-xs">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+            <span>보고서 인쇄 / PDF 저장</span>
+          </button>
+        </div>
       </div>
 
     </section>
 
   </main>
 
-  <!-- JAVASCRIPT LOGIC -->
-  <script>
-    // 14 Total Items: 10 Real Devices + 4 Trap Items
-    const HUNT_ITEMS = [
-      { id: 'phone', name: '스마트폰 알람/터치', icon: 'fa-mobile-screen-button', isReal: true, desc: 'MEMS 가속도계 & 정전용량' },
-      { id: 'doorlock', name: '디지털 도어록', icon: 'fa-fingerprint', isReal: true, desc: '접촉 전류 & 지문 융선 패턴' },
-      { id: 'mirror', name: '화장실 거울', icon: 'fa-wand-magic-sparkles', isReal: false, desc: '단순 가시광선 반사 (센서 없음)' },
-      { id: 'pir', name: '현관 센서등', icon: 'fa-lightbulb', isReal: true, desc: '초전소자 적외선 차동 전압' },
-      { id: 'elevator', name: '엘리베이터 광선', icon: 'fa-elevator', isReal: true, desc: '적외선 빔 차단 인터럽트' },
-      { id: 'autodoor', name: '자동문 레이더', icon: 'fa-door-open', isReal: true, desc: '24GHz 도플러 주파수 편이' },
-      { id: 'comb', name: '플라스틱 머리빗', icon: 'fa-bars', isReal: false, desc: '정전기는 생기나 정보 신호화 불가' },
-      { id: 'crosswalk', name: '보행 신호기 버튼', icon: 'fa-hand-pointer', isReal: true, desc: '스프링 접점 TTL 5V 펄스' },
-      { id: 'transitcard', name: '교통카드 단말기', icon: 'fa-id-card-clip', isReal: true, desc: '패러데이 전자기 유도' },
-      { id: 'busbell', name: '버스 하차벨', icon: 'fa-bell', isReal: true, desc: '누름 펄스 & 래치 회로 기억' },
-      { id: 'umbrella', name: '일반 장우산', icon: 'fa-umbrella', isReal: false, desc: '물리적 비 가림막 (센서 없음)' },
-      { id: 'subwaygate', name: '개찰구 포토센서', icon: 'fa-torii-gate', isReal: true, desc: '다채널 광차단 타이밍 분석' },
-      { id: 'school', name: '학교 열화상/출결', icon: 'fa-school', isReal: true, desc: '흑체 복사열 & BLE 비콘' },
-      { id: 'desk', name: '교실 나무 책상', icon: 'fa-cube', isReal: false, desc: '단순 지지 구조물 (센서 없음)' }
-    ];
-
-    // Round 2 Quizzes
-    const QUIZ_LIST = [
-      {
-        badge: 'Q1. 현관 센서등',
-        category: '체온과 적외선',
-        question: '센서등 아래에서 로봇처럼 완전히 가만히 멈춰 서 있으면 불이 켜져 있을까, 꺼질까?',
-        labelO: '켜져 있다',
-        labelX: '꺼진다!',
-        correct: 'X',
-        waveType: 'pir',
-        feedbackCorrect: '정답입니다! 불이 꺼집니다!',
-        feedbackWrong: '틀렸습니다! 센서등은 꺼집니다!',
-        explanation: '인체 체온(10μm 적외선)의 ‘공간적 온도 변화(차이)’가 생겨야만 센서 안의 두 소자 사이에 차동 전압(ΔV)이 발생합니다. 정지하면 전압이 0V가 되어 스위치가 꺼집니다.'
-      },
-      {
-        badge: 'Q2. 교통카드 단말기',
-        category: '전자기 유도',
-        question: '교통카드 속에 배터리가 들어있어서 단말기에 전기를 쏴주는 것이다? (O / X)',
-        labelO: 'O (배터리 있음)',
-        labelX: 'X (배터리 0개!)',
-        correct: 'X',
-        waveType: 'nfc',
-        feedbackCorrect: '정답입니다! 카드엔 배터리가 0개입니다!',
-        feedbackWrong: '틀렸습니다! 카드는 배터리가 없습니다!',
-        explanation: '교통카드 속에는 배터리가 전혀 없습니다! 단말기가 방출하는 13.56MHz 교류 자기장을 통과할 때 생기는 패러데이 전자기 유도로 유도 기전력을 얻어 순간적으로 칩이 깨어납니다.'
-      },
-      {
-        badge: 'Q3. 공동현관 자동문',
-        category: '도플러 효과',
-        question: '공동현관 자동문 앞에서 나무늘보처럼 초속 1cm로 아주아주 천천히 다가가면 문이 열릴까?',
-        labelO: '열린다',
-        labelX: '안 열린다!',
-        correct: 'X',
-        waveType: 'doppler',
-        feedbackCorrect: '정답입니다! 문이 열리지 않습니다!',
-        feedbackWrong: '틀렸습니다! 문이 열리지 않습니다!',
-        explanation: '마이크로웨이브 센서는 물체의 위치가 아니라 도플러 효과로 인한 주파수 편이(Δf = 2v·f0 / c)를 측정합니다. 속도가 너무 느리면 필터 기준치 이하로 떨어져 센서가 사람을 인식하지 못합니다.'
-      }
-    ];
-
-    // State Variables
-    const selectedHunts = new Set();
-    let currentQuizIndex = 0;
-    let quizScore = 0;
-    let soundEnabled = true;
-    let audioCtx = null;
-    let round1Seconds = 60;
-    let round1Interval = null;
-    let masterSeconds = 300; // 5 mins
-    let masterInterval = null;
-
-    // Web Audio Synthesizer
-    function playTone(freq = 600, duration = 0.08, type = 'sine') {
-      if (!soundEnabled) return;
-      try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
-      } catch (e) {
-        console.debug('Audio error', e);
-      }
-    }
-
-    function playSuccessChime() {
-      if (!soundEnabled) return;
-      playTone(523, 0.06, 'triangle');
-      setTimeout(() => playTone(659, 0.08, 'sine'), 60);
-      setTimeout(() => playTone(784, 0.12, 'sine'), 120);
-    }
-
-    function playBuzz() {
-      if (!soundEnabled) return;
-      playTone(180, 0.2, 'sawtooth');
-    }
-
-    // Render Round 1 Hunt Grid
-    function renderHuntGrid() {
-      const grid = document.getElementById('huntGrid');
-      grid.innerHTML = '';
-
-      HUNT_ITEMS.forEach(item => {
-        const isSelected = selectedHunts.has(item.id);
-        const card = document.createElement('div');
-        card.className = `p-2.5 rounded-xl border transition-all cursor-pointer select-none flex items-start gap-2.5 ${
-          isSelected 
-            ? 'bg-cyan-950/80 border-cyan-400 glow-cyan' 
-            : 'bg-slate-900/80 border-slate-800 hover:border-slate-700'
-        }`;
-
-        card.innerHTML = `
-          <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-xs ${
-            isSelected ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-slate-800 text-slate-400'
-          }">
-            <i class="fa-solid ${item.icon}"></i>
+  <!-- [신규 모달] 분자 결합 완료 시 자동으로 뜨는 상세 분자구조 정보 팝업 -->
+  <div id="molecule-structure-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-sm hidden transition-opacity duration-200">
+    <div class="glass-panel w-full max-w-xl rounded-3xl p-5 sm:p-6 shadow-2xl border-2 border-emerald-400 transform transition-all text-slate-800 max-h-[92vh] overflow-y-auto">
+      
+      <!-- 상단 헤더 -->
+      <div class="flex items-start justify-between border-b border-slate-200 pb-3.5 mb-3.5">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 text-white flex items-center justify-center text-2xl shadow-md">
+            🧬
           </div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-bold text-white truncate">${item.name}</span>
-              ${isSelected ? '<span class="text-cyan-400 text-xs font-bold">✓</span>' : ''}
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="pop-mol-stage" class="text-[10px] sm:text-xs font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                스테이지 1/6 완성
+              </span>
+              <span id="pop-mol-tag" class="text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-900">
+                플라스틱 원료
+              </span>
             </div>
-            <p class="text-[10px] text-slate-400 truncate mt-0.5">${item.desc}</p>
+            <h3 class="text-xl sm:text-2xl font-black text-slate-900 mt-1 flex items-baseline gap-2">
+              <span id="pop-mol-name" class="text-emerald-700">에틸렌</span>
+              <span id="pop-mol-formula" class="font-mono text-sm sm:text-base font-bold text-slate-500">(C₂H₄)</span>
+            </h3>
           </div>
-        `;
+        </div>
+        <button onclick="closeMoleculeStructureModal()" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition" title="닫기">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
 
-        card.addEventListener('click', () => handleHuntClick(item));
-        grid.appendChild(card);
+      <!-- 분자 구조 핵심 그래픽 & 개요 카드 -->
+      <div class="bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white rounded-2xl p-4 mb-3.5 border border-slate-800 relative overflow-hidden shadow-inner">
+        <div class="flex items-center justify-between text-xs text-slate-300 font-semibold mb-2">
+          <span class="flex items-center gap-1.5 text-emerald-400">
+            <i data-lucide="atom" class="w-4 h-4"></i>
+            <span>분자 결합 화학적 특성</span>
+          </span>
+          <span id="pop-mol-shape" class="text-teal-300 font-mono text-[11px] bg-slate-800/80 px-2 py-0.5 rounded-full border border-slate-700">
+            평면 삼각형 구조
+          </span>
+        </div>
+        <p id="pop-mol-desc" class="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
+          포집한 탄소로 합성하는 석유화학의 기본 뼈대! 탄소 원자 2개 사이에 이중결합이 형성되어 있습니다.
+        </p>
+      </div>
+
+      <!-- 2열 세부 구조 안내 그리드 -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 text-xs">
+        
+        <!-- 원자 구성 & 결합 특징 -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-1.5">
+          <h4 class="font-bold text-slate-900 flex items-center gap-1.5 text-xs pb-1 border-b border-slate-200">
+            <span class="text-emerald-600">🔬</span>
+            <span>원소 구성 및 결합 양식</span>
+          </h4>
+          <p class="text-slate-600 pt-1">
+            <strong class="text-slate-800">결합 원소:</strong>
+            <span id="pop-mol-atoms" class="text-slate-700 font-medium">탄소(C) 2개 + 수소(H) 4개</span>
+          </p>
+          <p class="text-slate-600">
+            <strong class="text-slate-800">결합 형태:</strong>
+            <span id="pop-mol-bonds" class="text-emerald-700 font-bold">탄소 간 이중결합 (C=C)</span>
+          </p>
+          <p class="text-slate-600">
+            <strong class="text-slate-800">탄소의 행방:</strong>
+            <span id="pop-mol-fate" class="text-slate-700">플라스틱 제품으로 오랜 기간 고정</span>
+          </p>
+        </div>
+
+        <!-- 분자 모형 키트 조립 가이드 -->
+        <div class="bg-emerald-50/60 border border-emerald-200 rounded-2xl p-3.5 space-y-1.5">
+          <h4 class="font-bold text-emerald-950 flex items-center gap-1.5 text-xs pb-1 border-b border-emerald-200">
+            <span>🧩</span>
+            <span>분자 모형 키트 조립 팁</span>
+          </h4>
+          <p id="pop-mol-kit-guide" class="text-emerald-900 leading-relaxed pt-1 text-[11px] sm:text-xs">
+            검정색 탄소 구 2개 사이에 유연한 연결 막대 2개를 꽂아 이중결합을 만들고, 양쪽에 흰색 수소 구 4개를 연결하세요.
+          </p>
+          <div class="pt-1 flex items-center gap-1 text-[10px] text-emerald-700 font-semibold">
+            <span>✓ 실제 조립 시 각도와 결합 막대 개수에 주의하세요!</span>
+          </div>
+        </div>
+
+      </div>
+        <!-- 하단 버튼군 -->
+        <div class="flex flex-col sm:flex-row gap-2 pt-2 border-t border-slate-200">
+          <button onclick="closeMoleculeStructureModal()" class="w-full sm:w-1/2 py-2.5 px-4 rounded-xl border border-slate-300 text-slate-700 font-bold text-xs hover:bg-slate-100 transition">
+            캔버스에서 구조 다시 보기
+          </button>
+          <button id="pop-modal-next-btn" onclick="nextStageFromStructureModal()" class="w-full sm:w-1/2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-black text-xs shadow-md transition flex items-center justify-center gap-1.5">
+            <span id="pop-modal-btn-label">다음 분자 합성하기 (2 / 6)</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- [모달] 6대 분자 전원 완성 후 최종 확인/선택 모달 -->
+    <div id="selection-confirm-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden transition-opacity">
+      <div class="glass-panel w-full max-w-xl rounded-3xl p-5 sm:p-6 shadow-2xl border-2 border-emerald-400 transform transition-all text-slate-800 max-h-[92vh] overflow-y-auto">
+        <div class="text-center">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-white mx-auto flex items-center justify-center mb-2.5 shadow-md text-2xl font-black">
+            🏆
+          </div>
+          <span class="text-xs font-black tracking-wider text-emerald-800 uppercase bg-emerald-100 px-3 py-1 rounded-full">
+            6대 탄소 화합물 합성 마스터 달성!
+          </span>
+          <h3 class="text-xl sm:text-2xl font-black text-slate-900 mt-2 mb-1">
+            최종 보고서 & 키트로 만들 분자를 선택하세요
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-600 mb-4">
+            합성한 6가지 분자 중 <strong>내가 워크북에 기록하고 분자 모형 키트로 직접 조립할 1가지 분자</strong>를 클릭해 선택해 주세요.
+          </p>
+        </div>
+
+        <!-- 모달 내 6종 분자 선택 리스트 그리드 -->
+        <div id="modal-molecule-picker-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-4">
+          <!-- JS 동적 생성 -->
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-2 pt-2 border-t border-slate-200">
+          <button onclick="closeMoleculeSelectionModal()" class="w-full sm:w-1/3 py-2.5 px-4 rounded-xl border border-slate-300 text-slate-700 font-bold text-xs hover:bg-slate-100 transition">
+            구조 더 살펴보기
+          </button>
+          <button id="modal-confirm-btn" onclick="proceedToStep3FromModal()" disabled class="w-full sm:w-2/3 py-2.5 px-4 rounded-xl bg-slate-200 text-slate-400 font-bold text-xs sm:text-sm transition flex items-center justify-center gap-1.5 cursor-not-allowed">
+            <span id="modal-confirm-btn-label">만들 분자를 먼저 선택해 주세요</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  <!-- 인앱 토스트 알림창 -->
+  <div id="custom-toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 text-white px-4 py-2.5 rounded-xl shadow-xl text-xs sm:text-sm font-semibold flex items-center gap-2 pointer-events-none opacity-0 transition-opacity duration-300">
+    <span id="toast-icon">✅</span>
+    <span id="toast-message">알림 메시지</span>
+  </div>
+
+  <!-- 푸터 -->
+  <footer class="bg-white border-t border-slate-200 py-3 text-center text-slate-400 text-xs no-print">
+    <p>탄소중립 에듀테크 워크숍 · 기후변화 솔루션 탄소포집(CCUS) 가상 공장</p>
+  </footer>
+
+  <script>
+    /* Web Audio API 사운드 엔진 */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      playPop() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.08);
+          gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.09);
+        } catch (e) {}
+      }
+      playSuccess() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+            gain.gain.setValueAtTime(0.15, now + idx * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.25);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now + idx * 0.08);
+            osc.stop(now + idx * 0.08 + 0.26);
+          });
+        } catch (e) {}
+      }
+      playWrong() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(180, now);
+          osc.frequency.linearRampToValueAtTime(110, now + 0.18);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.linearRampToValueAtTime(0.001, now + 0.18);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.19);
+        } catch (e) {}
+      }
+    }
+    const sound = new SoundEngine();
+
+    function toggleSound() {
+      sound.enabled = !sound.enabled;
+      const icon = document.getElementById('sound-icon');
+      if (sound.enabled) {
+        icon.setAttribute('data-lucide', 'volume-2');
+        icon.className = "w-4 h-4 text-emerald-600";
+      } else {
+        icon.setAttribute('data-lucide', 'volume-x');
+        icon.className = "w-4 h-4 text-slate-400";
+      }
+      lucide.createIcons();
+      showToast(sound.enabled ? '효과음이 켜졌습니다.' : '효과음이 꺼졌습니다.', sound.enabled ? '🔊' : '🔇');
+    }
+
+    /*
+      탄소 화합물 6종 데이터베이스
+      * 분자 결합 구조 및 모형 조립 안내 상세 정보(structureInfo) 포함
+    */
+    const MOLECULES = [
+      {
+        id: 'ethylene',
+        name: '에틸렌',
+        formula: 'C₂H₄',
+        shape: '평면 삼각형 구조 (결합각 약 120°)',
+        bonds: '탄소 간 이중결합 (C=C)',
+        usage: '플라스틱, 합성섬유, 포장재 등',
+        tag: '플라스틱 제품 · 섬유 · 포장재',
+        tagBg: 'bg-amber-100 text-amber-900',
+        isKitAvailable: true,
+        req: { C: 2, H: 4, O: 0 },
+        fate: '플라스틱·섬유 제품으로 장기간 고정',
+        atoms: '탄소(검정) 2개 + 수소(흰색) 4개',
+        desc: '포집한 탄소로 합성하는 석유화학의 기본 뼈대! 탄소 2개 사이에 강력한 이중결합이 있어 다른 분자와 사슬처럼 이어지며 폴리에틸렌(PE) 플라스틱으로 변신합니다.',
+        kitGuide: '검정색 탄소 구 2개 사이에 유연한 연결 막대 2개를 나란히 꽂아 이중결합(C=C)을 만들고, 양쪽 끝에 흰색 수소 4개를 연결하여 평면형으로 조립하세요.'
+      },
+      {
+        id: 'ethanol',
+        name: '에탄올',
+        formula: 'C₂H₅OH',
+        shape: '사면체 꺾임형 알코올 구조',
+        bonds: '탄소 사슬 단일결합 (C-C) + 히드록시기 (-OH)',
+        usage: '연료, 손소독제, 화장품 등',
+        tag: '연료 · 위생용품 · 화장품',
+        tagBg: 'bg-emerald-100 text-emerald-900',
+        isKitAvailable: true,
+        req: { C: 2, H: 6, O: 1 },
+        fate: '친환경 연료로 연소 시 재배출 가능 / 소독 시 증발',
+        atoms: '탄소(검정) 2개 + 수소(흰색) 6개 + 산소(빨강) 1개',
+        desc: '탄소 2개로 이루어진 사슬 끝에 산소와 수소가 꺾인 각도로 결합한 친수성 알코올! 물과 기름에 모두 잘 섞여 손소독제나 청정 바이오 연료로 쓰입니다.',
+        kitGuide: '탄소 2개를 먼저 연결하고 수소 5개를 붙인 뒤, 끝부분에 빨간색 산소 구를 연결하고 산소 구멍에 마지막 수소를 비스듬히 꽂아 꺾인 -OH기를 표현하세요.'
+      },
+      {
+        id: 'graphene',
+        name: '그래핀',
+        formula: 'C (동소체)',
+        shape: '2차원 평면 육각형 벌집 격자 구조',
+        bonds: '탄소 원자 간 공유결합 (sp² 평면 결합)',
+        usage: '배터리, 반도체, 스마트 기기 등',
+        tag: '에너지 저장 · 전자소재 · 스마트 기기',
+        tagBg: 'bg-blue-100 text-blue-900',
+        isKitAvailable: true,
+        req: { C: 6, H: 0, O: 0 },
+        fate: '배터리·전자기기에 고체 탄소 형태로 영구 고정',
+        atoms: '탄소(검정) 6개 (평면 육각형 벌집 링)',
+        desc: '오직 탄소 원자들로만 이루어진 2차원 벌집 모양의 나노 신소재! 강철보다 200배 강하고 전기가 빛처럼 빠르게 통해 차세대 초고속 배터리와 디스플레이의 핵심입니다.',
+        kitGuide: '검정색 탄소 구 6개를 단단한 막대로 둥글게 이어 정육각형 고리 형태를 평평하게 조립하세요. 수소 없이 탄소끼리만 결합합니다.'
+      },
+      {
+        id: 'methanol',
+        name: '메탄올',
+        formula: 'CH₃OH',
+        shape: '정사면체 중심 + 꺾임형 히드록시기',
+        bonds: '단일 탄소 사면체 결합 + -OH 알코올기',
+        usage: '연료, 용매, 화학 원료 등',
+        tag: '연료 · 용매 · 화학제품',
+        tagBg: 'bg-lime-100 text-lime-900',
+        isKitAvailable: true,
+        req: { C: 1, H: 4, O: 1 },
+        fate: '선박 연료 연소 시 대기 재배출 가능 / 합성원료 순환',
+        atoms: '탄소(검정) 1개 + 수소(흰색) 4개 + 산소(빨강) 1개',
+        desc: '포집한 이산화탄소와 그린 수소를 결합해 만드는 가장 간단한 청정 액화 알코올 연료! 대형 화물선박의 탄소배출을 줄이는 e-메탄올로 각광받고 있습니다.',
+        kitGuide: '가운데 검정 탄소에 수소 3개와 산소 1개를 입체적으로 꽂고, 산소 끝에 마지막 수소를 달아 조립합니다.'
+      },
+      {
+        id: 'formic_acid',
+        name: '개미산',
+        formula: 'CH₂O₂',
+        shape: '평면형 카르복실기 구조 (HCOOH)',
+        bonds: '탄소-산소 이중결합 (C=O) + 단일결합 (C-OH)',
+        usage: '보존제, 사료첨가제, 가죽·섬유 처리 등',
+        tag: '보존 · 가공 · 화학 원료',
+        tagBg: 'bg-teal-100 text-teal-900',
+        isKitAvailable: true,
+        req: { C: 1, H: 2, O: 2 },
+        fate: '농축산물 보존제 및 섬유 처리제로 흡수·순환',
+        atoms: '탄소(검정) 1개 + 수소(흰색) 2개 + 산소(빨강) 2개',
+        desc: '탄소 하나에 산소 2개가 결합한 유기산 구조! 한쪽 산소와는 이중결합(C=O), 다른 산소와는 단일결합(C-O-H)을 이루어 강한 살균력과 보존성을 발휘합니다.',
+        kitGuide: '탄소 구에 산소 1개는 유연한 막대 2개로 이중결합하고, 다른 산소는 단일 막대로 연결한 후 그 끝에 수소를 연결하세요.'
+      },
+      {
+        id: 'butanol',
+        name: '부탄올',
+        formula: 'C₄H₉OH',
+        shape: '지그재그 4탄소 사슬형 알코올',
+        bonds: '탄소 4개 연속 단일결합 (C-C-C-C) + -OH 알코올기',
+        usage: '연료, 용매, 화학 원료 등',
+        tag: '연료 · 용매 · 화학제품',
+        tagBg: 'bg-orange-100 text-orange-900',
+        isKitAvailable: true,
+        req: { C: 4, H: 10, O: 1 },
+        fate: '고효율 연료 연소 시 재배출 가능 / 페인트 용매',
+        atoms: '탄소(검정) 4개 + 수소(흰색) 10개 + 산소(빨강) 1개',
+        desc: '탄소 4개가 긴 기차처럼 연결된 고에너지 알코올! 휘발유와 성질이 매우 비슷해 엔진 개조 없이 바로 섞어 쓸 수 있는 차세대 고밀도 친환경 연료입니다.',
+        kitGuide: '검정 탄소 4개를 지그재그 사슬 형태로 길게 연결하고, 탄소 둘레에 수소 9개를 채운 뒤 한쪽 끝 탄소에 빨간 산소와 수소를 연결해 완성하세요.'
+      }
+    ];
+
+    // 앱 글로벌 상태
+    const appState = {
+      currentStep: 1,
+      captureMethod: 'points',
+      destinationCategory: 'utilization',
+      stageIndex: 0, // 0: 에틸렌 ~ 5: 부탄올
+      completedMolecules: [], // 완료된 분자 id 목록
+      selectedMoleculeId: null, // [수정] 초기 및 최종 완료 시 자동 선택 없음
+      capturedKg: { points: 0, dac: 0 },
+      hitCount: { points: 0, dac: 0 }
+    };
+
+    // -------------------------------------------------------------
+    // [1단계] 30초 포집 미니게임 엔진
+    // -------------------------------------------------------------
+    let gameCanvas, gameCtx;
+    let captureParticles = [];
+    let captureClickEffects = [];
+    let isCaptureRunning = false;
+    let captureStartTime = 0;
+    const CAPTURE_DURATION = 30000;
+    let captureAnimId = null;
+    let captureScore = 0;
+    let captureHits = 0;
+
+    class CaptureParticle {
+      constructor(type, x, y, vx, vy, radius) {
+        this.type = type; // 'CO2' or 'N2'/'O2'
+        this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+        this.radius = radius;
+        this.pulse = Math.random() * Math.PI * 2;
+      }
+      update(w, h) {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.pulse += 0.05;
+        if (this.x - this.radius < 0) { this.x = this.radius; this.vx *= -1; }
+        else if (this.x + this.radius > w) { this.x = w - this.radius; this.vx *= -1; }
+        if (this.y - this.radius < 0) { this.y = this.radius; this.vy *= -1; }
+        else if (this.y + this.radius > h) { this.y = h - this.radius; this.vy *= -1; }
+      }
+      draw(c) {
+        c.save();
+        if (this.type === 'CO2') {
+          const r = this.radius * (1 + Math.sin(this.pulse) * 0.08);
+          const grad = c.createRadialGradient(this.x, this.y, r * 0.2, this.x, this.y, r);
+          grad.addColorStop(0, '#6ee7b7');
+          grad.addColorStop(0.6, '#10b981');
+          grad.addColorStop(1, '#047857');
+          c.beginPath();
+          c.arc(this.x, this.y, r, 0, Math.PI * 2);
+          c.fillStyle = grad;
+          c.shadowColor = '#10b981';
+          c.shadowBlur = 10;
+          c.fill();
+          c.shadowBlur = 0;
+          c.fillStyle = '#ffffff';
+          c.font = `bold ${Math.max(9, Math.round(r * 0.75))}px Pretendard, sans-serif`;
+          c.textAlign = 'center';
+          c.textBaseline = 'middle';
+          c.fillText('CO₂', this.x, this.y + 0.5);
+        } else {
+          c.beginPath();
+          c.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          c.fillStyle = '#334155';
+          c.strokeStyle = '#475569';
+          c.lineWidth = 1;
+          c.fill();
+          c.stroke();
+          c.fillStyle = '#94a3b8';
+          c.font = `500 ${Math.max(8, Math.round(this.radius * 0.7))}px Pretendard, sans-serif`;
+          c.textAlign = 'center';
+          c.textBaseline = 'middle';
+          c.fillText(this.type, this.x, this.y);
+        }
+        c.restore();
+      }
+    }
+
+    class TextEffect {
+      constructor(x, y, text, color) {
+        this.x = x;
+        this.y = y;
+        this.text = text;
+        this.color = color;
+        this.life = 1.0;
+      }
+      update() {
+        this.y -= 1.2;
+        this.life -= 0.035;
+      }
+      draw(c) {
+        if (this.life <= 0) return;
+        c.save();
+        c.globalAlpha = Math.max(0, this.life);
+        c.fillStyle = this.color;
+        c.font = 'bold 13px Pretendard, sans-serif';
+        c.textAlign = 'center';
+        c.shadowColor = this.color;
+        c.shadowBlur = 6;
+        c.fillText(this.text, this.x, this.y);
+        c.restore();
+      }
+    }
+
+    function generateCaptureParticles() {
+      captureParticles = [];
+      const rect = gameCanvas.getBoundingClientRect();
+      const w = rect.width || 800;
+      const h = rect.height || 300;
+      if (appState.captureMethod === 'points') {
+        const co2Count = Math.min(50, Math.floor((w * h) / 4800));
+        for (let i = 0; i < co2Count; i++) {
+          const r = Math.random() * 5 + 16;
+          captureParticles.push(new CaptureParticle('CO2', Math.random() * (w - 40) + 20, Math.random() * (h - 40) + 20, (Math.random() - 0.5) * 2.5, (Math.random() - 0.5) * 2.5, r));
+        }
+        for (let i = 0; i < 8; i++) {
+          captureParticles.push(new CaptureParticle('N₂', Math.random() * (w - 40) + 20, Math.random() * (h - 40) + 20, (Math.random() - 0.5) * 1.5, (Math.random() - 0.5) * 1.5, 12));
+        }
+      } else {
+        const airCount = Math.min(65, Math.floor((w * h) / 3800));
+        for (let i = 0; i < airCount; i++) {
+          const type = Math.random() > 0.22 ? 'N₂' : 'O₂';
+          captureParticles.push(new CaptureParticle(type, Math.random() * (w - 40) + 20, Math.random() * (h - 40) + 20, (Math.random() - 0.5) * 1.5, (Math.random() - 0.5) * 1.5, 12));
+        }
+        for (let i = 0; i < 2; i++) {
+          captureParticles.push(new CaptureParticle('CO2', Math.random() * (w - 40) + 20, Math.random() * (h - 40) + 20, (Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2, 16));
+        }
+      }
+    }
+
+    function handleCaptureHit(clientX, clientY) {
+      if (!isCaptureRunning) return;
+      const rect = gameCanvas.getBoundingClientRect();
+      const hitX = clientX - rect.left;
+      const hitY = clientY - rect.top;
+
+      for (let i = captureParticles.length - 1; i >= 0; i--) {
+        const p = captureParticles[i];
+        if (Math.hypot(p.x - hitX, p.y - hitY) <= p.radius + 16) {
+          if (p.type === 'CO2') {
+            captureHits++;
+            sound.playPop();
+            let gain = appState.captureMethod === 'points' ? Math.floor(Math.random() * 11) + 25 : 1;
+            captureClickEffects.push(new TextEffect(p.x, p.y, `+${gain}kg CO₂!`, '#34d399'));
+            captureScore += gain;
+            updateCaptureScoreUI();
+
+            if (appState.captureMethod === 'points') {
+              p.x = Math.random() * (rect.width - 40) + 20;
+              p.y = Math.random() * (rect.height - 40) + 20;
+            } else {
+              p.x = -100; p.y = -100;
+              setTimeout(() => {
+                if (isCaptureRunning) {
+                  p.x = Math.random() * (rect.width - 40) + 20;
+                  p.y = Math.random() * (rect.height - 40) + 20;
+                }
+              }, 1200);
+            }
+          } else {
+            captureClickEffects.push(new TextEffect(hitX, hitY, `${p.type} (공기)`, '#94a3b8'));
+          }
+          break;
+        }
+      }
+    }
+
+    function updateCaptureScoreUI() {
+      document.getElementById('game-score').textContent = captureScore.toLocaleString();
+      document.getElementById('game-hits').textContent = captureHits;
+      const isPoints = (appState.captureMethod === 'points');
+      const maxScore = isPoints ? 4500 : 45;
+      document.getElementById('game-score-bar').style.width = `${Math.min((captureScore / maxScore) * 100, 100)}%`;
+      const badge = document.getElementById('game-rate-badge');
+      badge.textContent = isPoints ? `초고속 흡수 중 (${captureScore}kg)` : `희박 분자 수색 중 (${captureScore}kg)`;
+      badge.className = isPoints ? 'text-[10px] text-emerald-400 font-bold mt-1 truncate' : 'text-[10px] text-teal-300 font-bold mt-1 truncate';
+    }
+
+    function startGame() {
+      if (isCaptureRunning) return;
+      isCaptureRunning = true;
+      captureStartTime = performance.now();
+      captureScore = 0;
+      captureHits = 0;
+      document.getElementById('game-overlay-intro').classList.add('hidden');
+      document.getElementById('game-overlay-result').classList.add('hidden');
+      const btn = document.getElementById('btn-start-game');
+      btn.disabled = true;
+      btn.classList.add('opacity-50', 'cursor-not-allowed');
+      document.getElementById('btn-start-label').textContent = '포집 진행 중 (30초)...';
+      document.getElementById('game-status-dot').className = 'w-3 h-3 rounded-full bg-amber-400 animate-ping';
+      resizeGameCanvas();
+      generateCaptureParticles();
+      updateCaptureScoreUI();
+      runCaptureLoop();
+    }
+
+    function runCaptureLoop() {
+      const now = performance.now();
+      const elapsed = now - captureStartTime;
+      const remaining = Math.max(0, CAPTURE_DURATION - elapsed);
+      document.getElementById('game-timer').textContent = (remaining / 1000).toFixed(1);
+      document.getElementById('game-timer-bar').style.width = `${((CAPTURE_DURATION - elapsed) / CAPTURE_DURATION) * 100}%`;
+
+      const rect = gameCanvas.getBoundingClientRect();
+      gameCtx.fillStyle = '#020617';
+      gameCtx.fillRect(0, 0, rect.width, rect.height);
+
+      captureParticles.forEach(p => {
+        p.update(rect.width, rect.height);
+        p.draw(gameCtx);
       });
 
-      updateHuntScore();
+      for (let i = captureClickEffects.length - 1; i >= 0; i--) {
+        const eff = captureClickEffects[i];
+        eff.update();
+        eff.draw(gameCtx);
+        if (eff.life <= 0) captureClickEffects.splice(i, 1);
+      }
+
+      if (remaining > 0) {
+        captureAnimId = requestAnimationFrame(runCaptureLoop);
+      } else {
+        finishCaptureGame();
+      }
     }
 
-    function handleHuntClick(item) {
-      if (!item.isReal) {
-        // Trap triggered!
-        playBuzz();
-        const toast = document.getElementById('trapToast');
-        toast.textContent = `⚠️ [탈락 후보!] '${item.name}'은(는) 신호를 읽지 않습니다! (${item.desc})`;
-        toast.classList.remove('hidden');
-        setTimeout(() => toast.classList.add('hidden'), 2600);
+    function finishCaptureGame() {
+      isCaptureRunning = false;
+      if (captureAnimId) cancelAnimationFrame(captureAnimId);
+      document.getElementById('game-timer').textContent = '0.0';
+      document.getElementById('game-timer-bar').style.width = '0%';
+      const btn = document.getElementById('btn-start-game');
+      btn.disabled = false;
+      btn.classList.remove('opacity-50', 'cursor-not-allowed');
+      document.getElementById('btn-start-label').textContent = '다시 포집하기 🔄';
+      document.getElementById('game-status-dot').className = 'w-3 h-3 rounded-full bg-emerald-400';
+
+      const method = appState.captureMethod;
+      appState.capturedKg[method] = captureScore;
+      appState.hitCount[method] = captureHits;
+
+      const resOverlay = document.getElementById('game-overlay-result');
+      const resEmoji = document.getElementById('result-emoji');
+      const resTitle = document.getElementById('result-title');
+      const resSummary = document.getElementById('result-summary');
+      const resDetail = document.getElementById('result-detail');
+
+      if (method === 'points') {
+        resEmoji.textContent = '🏭';
+        resTitle.textContent = '배출원 30초 포집 완료!';
+        resSummary.textContent = `총 ${captureScore.toLocaleString()} kg 포집! (분자 ${captureHits}개 흡수)`;
+        resDetail.innerHTML = `배출가스는 <strong>CO₂ 농도가 진해(약 15%)</strong> 순식간에 <strong>대량 수집</strong>할 수 있었습니다!`;
+        sound.playSuccess();
+      } else {
+        resEmoji.textContent = '🌬️';
+        resTitle.textContent = '직접 공기 포집 (DAC) 30초 완료!';
+        resSummary.textContent = `총 ${captureScore} kg 포집 성공! (분자 ${captureHits}개 발견)`;
+        resDetail.innerHTML = `대기 중 농도가 <strong>0.04%로 매우 희박</strong>했지만 <strong>이미 공기에 퍼진 탄소를 정화하는 소중한 포집</strong>입니다!`;
+        sound.playSuccess();
+      }
+      resOverlay.classList.remove('hidden');
+    }
+
+    function selectCaptureMethod(method) {
+      if (isCaptureRunning) return;
+      appState.captureMethod = method;
+      const cardPoints = document.getElementById('method-card-points');
+      const cardDac = document.getElementById('method-card-dac');
+      const badgePoints = document.getElementById('badge-points');
+      const badgeDac = document.getElementById('badge-dac');
+      const gameTitle = document.getElementById('game-mode-title');
+      const densityInfo = document.getElementById('canvas-density-info');
+
+      if (method === 'points') {
+        cardPoints.className = 'relative border-2 border-emerald-500 bg-emerald-50/50 rounded-2xl p-4 sm:p-5 cursor-pointer transition-all duration-200 hover:shadow-md';
+        cardDac.className = 'relative border-2 border-slate-200 bg-slate-50/60 rounded-2xl p-4 sm:p-5 cursor-pointer transition-all duration-200 hover:border-teal-400 hover:bg-teal-50/30';
+        badgePoints.classList.remove('hidden');
+        badgeDac.classList.add('hidden');
+        gameTitle.textContent = '배출원 포집 (농도 약 15%): 고농도 가스 방출 중';
+        densityInfo.textContent = 'CO₂ 농도: 약 4~15% (매우 진함 · 대량 포집)';
+      } else {
+        cardPoints.className = 'relative border-2 border-slate-200 bg-slate-50/60 rounded-2xl p-4 sm:p-5 cursor-pointer transition-all duration-200 hover:border-emerald-400';
+        cardDac.className = 'relative border-2 border-teal-500 bg-teal-50/50 rounded-2xl p-4 sm:p-5 cursor-pointer transition-all duration-200 hover:shadow-md';
+        badgePoints.classList.add('hidden');
+        badgeDac.classList.remove('hidden');
+        gameTitle.textContent = '직접 공기 포집 DAC (농도 약 0.04%): 일반 대기 상태';
+        densityInfo.textContent = 'CO₂ 농도: 약 0.04% (매우 희박 · 정화 포집)';
+      }
+
+      document.getElementById('game-overlay-intro').classList.remove('hidden');
+      document.getElementById('game-overlay-result').classList.add('hidden');
+      document.getElementById('game-timer').textContent = '30.0';
+      document.getElementById('game-timer-bar').style.width = '100%';
+      document.getElementById('game-score').textContent = '0';
+      document.getElementById('game-hits').textContent = '0';
+      document.getElementById('game-score-bar').style.width = '0%';
+      generateCaptureParticles();
+      drawCaptureStaticPreview();
+    }
+
+    function drawCaptureStaticPreview() {
+      if (!gameCtx || isCaptureRunning) return;
+      const rect = gameCanvas.getBoundingClientRect();
+      gameCtx.fillStyle = '#020617';
+      gameCtx.fillRect(0, 0, rect.width, rect.height);
+      captureParticles.forEach(p => p.draw(gameCtx));
+    }
+
+    function resizeGameCanvas() {
+      if (!gameCanvas) return;
+      const rect = gameCanvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      gameCanvas.width = rect.width * dpr;
+      gameCanvas.height = rect.height * dpr;
+      gameCtx.resetTransform();
+      gameCtx.scale(dpr, dpr);
+    }
+
+    // -------------------------------------------------------------
+    // [2단계] 원자 결합 챌린지 캔버스 인터랙션 엔진
+    // -------------------------------------------------------------
+    let craftCanvas, craftCtx;
+    let craftWidth, craftHeight;
+    let craftSlots = [];
+    let fallingAtoms = [];
+    let craftParticles = [];
+    let draggedAtom = null;
+    let hoveredSlot = null;
+    let activePointerId = null;
+    let isCraftComplete = false;
+    let lastCraftSpawnTime = 0;
+    let autoModalTimer = null;
+    let countdownInterval = null;
+
+    class CraftParticle {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 4 + 1.5;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.radius = Math.random() * 3.5 + 2;
+        this.alpha = 1;
+        this.decay = Math.random() * 0.03 + 0.02;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += 0.08;
+        this.alpha -= this.decay;
+      }
+      draw(c) {
+        c.save();
+        c.globalAlpha = Math.max(0, this.alpha);
+        c.beginPath();
+        c.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        c.fillStyle = this.color;
+        c.shadowColor = this.color;
+        c.shadowBlur = 6;
+        c.fill();
+        c.restore();
+      }
+    }
+
+    class FallingAtom {
+      constructor() {
+        const activeMol = MOLECULES[appState.stageIndex] || MOLECULES[0];
+        let pool = [];
+        if (activeMol.req.C > 0) pool.push('C', 'C', 'C');
+        if (activeMol.req.H > 0) pool.push('H', 'H', 'H');
+        if (activeMol.req.O > 0) pool.push('O', 'O');
+        if (pool.length === 0) pool = ['C', 'H', 'O'];
+
+        this.type = pool[Math.floor(Math.random() * pool.length)];
+        this.radius = 21;
+        this.x = Math.random() * (craftWidth - 60) + 30;
+        this.y = -30;
+        this.vx = (Math.random() - 0.5) * 1.2;
+        this.vy = Math.random() * 0.8 + 1.1;
+        this.isDragging = false;
+        this.wobble = Math.random() * Math.PI * 2;
+      }
+      update() {
+        if (this.isDragging) return;
+        this.wobble += 0.04;
+        this.x += this.vx + Math.sin(this.wobble) * 0.4;
+        this.y += this.vy;
+        if (this.x - this.radius < 10) { this.x = 10 + this.radius; this.vx *= -1; }
+        else if (this.x + this.radius > craftWidth - 10) { this.x = craftWidth - 10 - this.radius; this.vx *= -1; }
+      }
+      draw(c) {
+        c.save();
+        c.beginPath();
+        c.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+
+        let grad;
+        if (this.type === 'C') {
+          grad = c.createRadialGradient(this.x - 5, this.y - 5, 2, this.x, this.y, this.radius);
+          grad.addColorStop(0, '#475569');
+          grad.addColorStop(1, '#0f172a');
+          c.fillStyle = grad;
+          c.strokeStyle = this.isDragging ? '#34d399' : '#64748b';
+        } else if (this.type === 'H') {
+          grad = c.createRadialGradient(this.x - 5, this.y - 5, 2, this.x, this.y, this.radius);
+          grad.addColorStop(0, '#ffffff');
+          grad.addColorStop(1, '#cbd5e1');
+          c.fillStyle = grad;
+          c.strokeStyle = this.isDragging ? '#38bdf8' : '#94a3b8';
+        } else {
+          grad = c.createRadialGradient(this.x - 5, this.y - 5, 2, this.x, this.y, this.radius);
+          grad.addColorStop(0, '#f87171');
+          grad.addColorStop(1, '#b91c1c');
+          c.fillStyle = grad;
+          c.strokeStyle = this.isDragging ? '#fca5a5' : '#ef4444';
+        }
+
+        c.lineWidth = this.isDragging ? 3.5 : 2;
+        c.shadowColor = this.isDragging ? (this.type === 'O' ? '#ef4444' : (this.type === 'C' ? '#10b981' : '#38bdf8')) : 'rgba(0,0,0,0.4)';
+        c.shadowBlur = this.isDragging ? 14 : 6;
+        c.fill();
+        c.stroke();
+
+        c.fillStyle = this.type === 'H' ? '#0f172a' : '#ffffff';
+        c.font = 'bold 15px "Inter", sans-serif';
+        c.textAlign = 'center';
+        c.textBaseline = 'middle';
+        c.shadowBlur = 0;
+        c.fillText(this.type, this.x, this.y);
+
+        c.beginPath();
+        c.arc(this.x - 6, this.y - 6, 4, 0, Math.PI * 2);
+        c.fillStyle = 'rgba(255, 255, 255, 0.45)';
+        c.fill();
+        c.restore();
+      }
+    }
+
+    function initCraftMoleculeSlots(molId) {
+      if (!craftWidth || !craftHeight) return;
+      const centerX = craftWidth / 2;
+      const centerY = craftHeight * 0.60;
+      const slots = [];
+      const s = craftWidth < 680 ? 0.78 : 1.0;
+      let counter = 0;
+
+      const add = (type, x, y) => {
+        slots.push({ id: `slot_${counter++}`, type, x, y, filled: false });
+      };
+
+      if (molId === 'ethylene') { // C2H4
+        add('C', centerX - 38 * s, centerY);
+        add('C', centerX + 38 * s, centerY);
+        add('H', centerX - 82 * s, centerY - 45 * s);
+        add('H', centerX - 82 * s, centerY + 45 * s);
+        add('H', centerX + 82 * s, centerY - 45 * s);
+        add('H', centerX + 82 * s, centerY + 45 * s);
+      } else if (molId === 'ethanol') { // C2H5OH
+        add('C', centerX - 60 * s, centerY);
+        add('C', centerX, centerY);
+        add('O', centerX + 60 * s, centerY - 15 * s);
+        add('H', centerX + 95 * s, centerY + 15 * s);
+        add('H', centerX - 60 * s, centerY - 48 * s);
+        add('H', centerX - 60 * s, centerY + 48 * s);
+        add('H', centerX - 105 * s, centerY);
+        add('H', centerX, centerY - 48 * s);
+        add('H', centerX, centerY + 48 * s);
+      } else if (molId === 'graphene') { // C6 Hexagonal Ring
+        const r = 54 * s;
+        for (let i = 0; i < 6; i++) {
+          const angle = (Math.PI / 3) * i - Math.PI / 6;
+          add('C', centerX + r * Math.cos(angle), centerY + r * Math.sin(angle));
+        }
+      } else if (molId === 'methanol') { // CH3OH
+        add('C', centerX - 30 * s, centerY);
+        add('O', centerX + 45 * s, centerY - 12 * s);
+        add('H', centerX + 82 * s, centerY + 18 * s);
+        add('H', centerX - 30 * s, centerY - 52 * s);
+        add('H', centerX - 30 * s, centerY + 52 * s);
+        add('H', centerX - 78 * s, centerY);
+      } else if (molId === 'formic_acid') { // CH2O2
+        add('C', centerX - 20 * s, centerY);
+        add('O', centerX - 20 * s, centerY - 52 * s);
+        add('O', centerX + 45 * s, centerY + 18 * s);
+        add('H', centerX + 82 * s, centerY + 42 * s);
+        add('H', centerX - 68 * s, centerY);
+      } else if (molId === 'butanol') { // C4H9OH
+        const step = 44 * s;
+        const startX = centerX - (1.6 * step);
+        for (let i = 0; i < 4; i++) {
+          add('C', startX + i * step, centerY);
+          add('H', startX + i * step, centerY - 45 * s);
+          add('H', startX + i * step, centerY + 45 * s);
+        }
+        add('H', startX - 38 * s, centerY);
+        add('O', startX + 3 * step + 44 * s, centerY - 15 * s);
+        add('H', startX + 3 * step + 78 * s, centerY + 15 * s);
+      }
+
+      craftSlots = slots;
+      isCraftComplete = false;
+      draggedAtom = null;
+      hoveredSlot = null;
+      fallingAtoms = [];
+      clearAutoModalTimers();
+      document.getElementById('craft-complete-banner').classList.add('hidden');
+      updateCraftHUD();
+    }
+
+    // 단일화된 updateCraftHUD
+    function updateCraftHUD() {
+      const activeMol = MOLECULES[appState.stageIndex] || MOLECULES[0];
+      const stageBadge = document.getElementById('craft-stage-badge');
+      if (stageBadge) {
+        stageBadge.textContent = `스테이지 ${appState.stageIndex + 1} / ${MOLECULES.length}`;
+      }
+      document.getElementById('craft-target-name').textContent = activeMol.name;
+      document.getElementById('craft-target-formula').textContent = `(${activeMol.formula})`;
+      document.getElementById('craft-target-hint').textContent = activeMol.usage;
+
+      const filledC = craftSlots.filter(s => s.filled && s.type === 'C').length;
+      const filledH = craftSlots.filter(s => s.filled && s.type === 'H').length;
+      const filledO = craftSlots.filter(s => s.filled && s.type === 'O').length;
+
+      document.getElementById('craft-c-badge').textContent = `${filledC} / ${activeMol.req.C}`;
+      document.getElementById('craft-h-badge').textContent = `${filledH} / ${activeMol.req.H}`;
+      document.getElementById('craft-o-badge').textContent = `${filledO} / ${activeMol.req.O}`;
+    }
+
+    function drawCraftBlueprint(context) {
+      if (!craftSlots || craftSlots.length === 0) return;
+
+      // 결합선 그리기
+      context.save();
+      for (let i = 0; i < craftSlots.length; i++) {
+        for (let j = i + 1; j < craftSlots.length; j++) {
+          const dist = Math.hypot(craftSlots[i].x - craftSlots[j].x, craftSlots[i].y - craftSlots[j].y);
+          if (dist < 85) {
+            context.beginPath();
+            context.moveTo(craftSlots[i].x, craftSlots[i].y);
+            context.lineTo(craftSlots[j].x, craftSlots[j].y);
+            if (craftSlots[i].filled && craftSlots[j].filled) {
+              context.strokeStyle = '#10b981';
+              context.lineWidth = 4.5;
+              context.shadowColor = 'rgba(16, 185, 129, 0.5)';
+              context.shadowBlur = 6;
+            } else {
+              context.strokeStyle = 'rgba(71, 85, 105, 0.45)';
+              context.lineWidth = 3.5;
+              context.shadowBlur = 0;
+            }
+            context.stroke();
+          }
+        }
+      }
+      context.restore();
+
+      // 드래그 중인 원자와 일치하는 슬롯 안내선
+      if (draggedAtom) {
+        context.save();
+        craftSlots.forEach(slot => {
+          if (!slot.filled && slot.type === draggedAtom.type) {
+            const dist = Math.hypot(slot.x - draggedAtom.x, slot.y - draggedAtom.y);
+            if (dist < 140) {
+              context.beginPath();
+              context.moveTo(draggedAtom.x, draggedAtom.y);
+              context.lineTo(slot.x, slot.y);
+              context.strokeStyle = dist < 50 ? 'rgba(52, 211, 153, 0.8)' : 'rgba(52, 211, 153, 0.25)';
+              context.lineWidth = dist < 50 ? 2.5 : 1.5;
+              context.setLineDash([4, 4]);
+              context.stroke();
+            }
+          }
+        });
+        context.restore();
+      }
+
+      // 슬롯 그리기
+      craftSlots.forEach(slot => {
+        const isHovered = hoveredSlot && hoveredSlot.id === slot.id;
+        const isMatch = draggedAtom && !slot.filled && slot.type === draggedAtom.type;
+
+        context.save();
+        context.beginPath();
+        const r = isHovered ? 26 : (isMatch ? 24 : 22);
+        context.arc(slot.x, slot.y, r, 0, Math.PI * 2);
+
+        if (slot.filled) {
+          if (slot.type === 'C') { context.fillStyle = '#1e293b'; context.strokeStyle = '#34d399'; }
+          else if (slot.type === 'H') { context.fillStyle = '#f1f5f9'; context.strokeStyle = '#38bdf8'; }
+          else { context.fillStyle = '#ef4444'; context.strokeStyle = '#f87171'; }
+          context.lineWidth = 3;
+          context.shadowColor = 'rgba(16, 185, 129, 0.4)';
+          context.shadowBlur = 8;
+          context.fill();
+          context.stroke();
+
+          context.fillStyle = slot.type === 'H' ? '#0f172a' : '#ffffff';
+          context.font = 'bold 15px "Inter", sans-serif';
+          context.textAlign = 'center';
+          context.textBaseline = 'middle';
+          context.fillText(slot.type, slot.x, slot.y);
+        } else {
+          if (isHovered) {
+            context.fillStyle = 'rgba(16, 185, 129, 0.25)';
+            context.strokeStyle = '#10b981';
+            context.lineWidth = 3;
+            context.shadowColor = '#10b981';
+            context.shadowBlur = 12;
+          } else if (isMatch) {
+            context.fillStyle = 'rgba(16, 185, 129, 0.1)';
+            context.strokeStyle = '#34d399';
+            context.lineWidth = 2.5;
+            context.shadowColor = '#34d399';
+            context.shadowBlur = 6;
+          } else {
+            context.fillStyle = 'rgba(15, 23, 42, 0.65)';
+            context.strokeStyle = slot.type === 'C' ? '#94a3b8' : (slot.type === 'O' ? '#f87171' : '#cbd5e1');
+            context.lineWidth = 2;
+            context.shadowBlur = 0;
+          }
+          context.setLineDash(isHovered ? [] : [5, 4]);
+          context.fill();
+          context.stroke();
+          context.setLineDash([]);
+
+          context.fillStyle = isHovered ? '#10b981' : (isMatch ? '#6ee7b7' : 'rgba(203, 213, 225, 0.75)');
+          context.font = isHovered ? 'bold 16px "Inter", sans-serif' : '13px "Inter", sans-serif';
+          context.textAlign = 'center';
+          context.textBaseline = 'middle';
+          context.fillText(slot.type, slot.x, slot.y);
+        }
+        context.restore();
+      });
+    }
+
+    function craftLoop(timestamp) {
+      if (appState.currentStep === 2 && appState.destinationCategory === 'utilization') {
+        craftCtx.clearRect(0, 0, craftWidth, craftHeight);
+
+        // 원자 주기적 낙하
+        if (timestamp - lastCraftSpawnTime > 850 && fallingAtoms.length < 8 && !isCraftComplete) {
+          fallingAtoms.push(new FallingAtom());
+          lastCraftSpawnTime = timestamp;
+        }
+
+        // 파티클
+        for (let i = craftParticles.length - 1; i >= 0; i--) {
+          const p = craftParticles[i];
+          p.update();
+          p.draw(craftCtx);
+          if (p.alpha <= 0) craftParticles.splice(i, 1);
+        }
+
+        drawCraftBlueprint(craftCtx);
+
+        // 낙하 원자 업데이트 및 렌더링
+        for (let i = fallingAtoms.length - 1; i >= 0; i--) {
+          const atom = fallingAtoms[i];
+          if (atom !== draggedAtom) {
+            atom.update();
+            atom.draw(craftCtx);
+            if (atom.y > craftHeight + 40) fallingAtoms.splice(i, 1);
+          }
+        }
+
+        if (draggedAtom) draggedAtom.draw(craftCtx);
+      }
+      requestAnimationFrame(craftLoop);
+    }
+
+    function createCraftBurst(x, y, color) {
+      for (let k = 0; k < 12; k++) {
+        craftParticles.push(new CraftParticle(x, y, color));
+      }
+    }
+
+    function checkCraftCompletion() {
+      const allFilled = craftSlots.length > 0 && craftSlots.every(s => s.filled);
+      if (allFilled && !isCraftComplete) {
+        isCraftComplete = true;
+        sound.playSuccess();
+        
+        const currentMol = MOLECULES[appState.stageIndex];
+        if (!appState.completedMolecules.includes(currentMol.id)) {
+          appState.completedMolecules.push(currentMol.id);
+        }
+        renderMoleculeCards();
+        updateStep3ButtonState();
+
+        const banner = document.getElementById('craft-complete-banner');
+        const badge = document.getElementById('banner-badge');
+        const title = document.getElementById('banner-title');
+        const desc = document.getElementById('banner-desc');
+        const nextBtn = document.getElementById('btn-next-mol-stage');
+        const isFinal = (appState.completedMolecules.length >= MOLECULES.length);
+
+        if (!isFinal) {
+          badge.className = 'text-xs font-black tracking-wider text-emerald-800 bg-emerald-100 px-3 py-0.5 rounded-full uppercase';
+          badge.textContent = `스테이지 ${appState.stageIndex + 1} / ${MOLECULES.length} 클리어!`;
+          title.innerHTML = `<span class="text-emerald-700">${currentMol.name}</span> (${currentMol.formula}) 완성!`;
+          desc.innerHTML = `화학 결합이 완벽하게 이루어졌습니다!<br>분자 구조 상세 정보를 확인하고 다음 분자로 이동하세요.`;
+          if (nextBtn) {
+            nextBtn.classList.remove('hidden');
+            nextBtn.innerHTML = `<span>다음 분자 합성하기 (${appState.stageIndex + 2} / ${MOLECULES.length})</span><i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>`;
+          }
+        } else {
+          // 6개 모두 완성 완료! -> 자동 선택 해제 (모두 비선택 상태로 초기화)
+          appState.selectedMoleculeId = null;
+          badge.className = 'text-xs font-black tracking-wider text-amber-900 bg-amber-200 px-3 py-0.5 rounded-full uppercase';
+          badge.textContent = `🎉 6종 전원 합성 완성!`;
+          title.innerHTML = `<span class="text-emerald-700">6대 탄소 화합물</span> 결합 마스터!`;
+          desc.innerHTML = `에틸렌부터 부탄올까지 6가지 분자 구조를 모두 완성했습니다!<br>이제 <strong>내가 최종 보고서로 발급받고 키트로 만들 분자</strong>를 선택해 주세요.`;
+          if (nextBtn) {
+            nextBtn.innerHTML = `<span>🎯 내가 만들 분자 최종 선택하기</span><i data-lucide="award" class="w-3.5 h-3.5"></i>`;
+          }
+          document.getElementById('all-completed-tag').classList.remove('hidden');
+          document.getElementById('cards-guide-text').textContent = '🎉 6종 전원 합성이 완료되었습니다! 아래 카드 또는 선택창에서 원하는 분자를 클릭해 3단계 결과 카드를 확인하세요.';
+        }
+
+        banner.classList.remove('hidden');
+        lucide.createIcons();
+
+        const centerX = craftWidth / 2;
+        const centerY = craftHeight * 0.60;
+        for (let i = 0; i < 35; i++) {
+          createCraftBurst(centerX + (Math.random() - 0.5) * 140, centerY + (Math.random() - 0.5) * 90, ['#10b981', '#38bdf8', '#fbbf24', '#f43f5e'][Math.floor(Math.random() * 4)]);
+        }
+
+        // 5초 동안 첫 번째 팝업을 눈으로 관찰한 후 2번째 팝업으로 자동 이동
+        startAutoModalCountdown(currentMol, isFinal);
+      }
+    }
+
+    function clearAutoModalTimers() {
+      if (autoModalTimer) {
+        clearTimeout(autoModalTimer);
+        autoModalTimer = null;
+      }
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+      }
+    }
+
+    function startAutoModalCountdown(mol, isFinal) {
+      clearAutoModalTimers();
+      // 5초 동안 첫 번째 팝업을 관찰한 후 2번째 상세 구조 팝업으로 자동 전환
+      autoModalTimer = setTimeout(() => {
+        clearAutoModalTimers();
+        openMoleculeStructureModal(mol, isFinal);
+      }, 5000);
+    }
+
+    function triggerStructureModalNow() {
+      clearAutoModalTimers();
+      const curMol = MOLECULES[appState.stageIndex];
+      const isFinal = (appState.completedMolecules.length >= MOLECULES.length);
+      openMoleculeStructureModal(curMol, isFinal);
+    }
+
+    // 팝업 모달 열기 함수 (결합 분자 구조 상세 내용)
+    function openMoleculeStructureModal(mol, isFinal = false) {
+      if (!mol) return;
+      clearAutoModalTimers();
+      document.getElementById('pop-mol-stage').textContent = `스테이지 ${appState.stageIndex + 1} / ${MOLECULES.length} 완성`;
+      document.getElementById('pop-mol-tag').textContent = mol.tag;
+      document.getElementById('pop-mol-name').textContent = mol.name;
+      document.getElementById('pop-mol-formula').textContent = `(${mol.formula})`;
+      document.getElementById('pop-mol-shape').textContent = mol.shape;
+      document.getElementById('pop-mol-desc').textContent = mol.desc;
+      document.getElementById('pop-mol-atoms').textContent = mol.atoms;
+      document.getElementById('pop-mol-bonds').textContent = mol.bonds;
+      document.getElementById('pop-mol-fate').textContent = mol.fate;
+      document.getElementById('pop-mol-kit-guide').textContent = mol.kitGuide;
+
+      const nextBtnLabel = document.getElementById('pop-modal-btn-label');
+      if (isFinal) {
+        nextBtnLabel.textContent = '🎯 6종 완성! 내가 만들 분자 최종 선택하기';
+      } else {
+        nextBtnLabel.textContent = `다음 분자 합성하기 (${appState.stageIndex + 2} / ${MOLECULES.length})`;
+      }
+
+      document.getElementById('molecule-structure-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeMoleculeStructureModal() {
+      document.getElementById('molecule-structure-modal').classList.add('hidden');
+    }
+
+    function reopenCurrentStructureModal() {
+      const curMol = MOLECULES[appState.stageIndex];
+      const isFinal = (appState.completedMolecules.length >= MOLECULES.length);
+      openMoleculeStructureModal(curMol, isFinal);
+    }
+
+    function nextStageFromStructureModal() {
+      closeMoleculeStructureModal();
+      const isFinal = (appState.completedMolecules.length >= MOLECULES.length);
+      if (isFinal) {
+        openMoleculeSelectionModal();
+      } else {
+        goToNextMoleculeStage();
+      }
+    }
+
+    function goToNextMoleculeStage() {
+      const isFinal = (appState.completedMolecules.length >= MOLECULES.length);
+      if (isFinal) {
+        openMoleculeSelectionModal();
+        return;
+      }
+      if (appState.stageIndex < MOLECULES.length - 1) {
+        appState.stageIndex++;
+        const nextMol = MOLECULES[appState.stageIndex];
+        initCraftMoleculeSlots(nextMol.id);
+        renderMoleculeCards();
+        updateStep3ButtonState();
+        showToast(`${appState.stageIndex + 1}단계: ${nextMol.name} (${nextMol.formula}) 합성을 시작합니다!`, '🚀');
+      }
+    }
+
+    function updateStep3ButtonState() {
+      const btn = document.getElementById('btn-goto-step3');
+      const text = document.getElementById('btn-goto-step3-text');
+      if (!btn || !text) return;
+
+      const isStorage = (appState.destinationCategory === 'storage');
+      const allCompleted = (appState.completedMolecules.length >= MOLECULES.length);
+      const chosenMol = MOLECULES.find(m => m.id === appState.selectedMoleculeId);
+
+      if (isStorage) {
+        btn.className = 'px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer';
+        text.textContent = '3단계: 영구 저장 결과 카드 확인하기';
         return;
       }
 
-      if (selectedHunts.has(item.id)) {
-        selectedHunts.delete(item.id);
-        playTone(380, 0.05, 'sine');
-      } else {
-        selectedHunts.add(item.id);
-        playTone(700, 0.08, 'triangle');
-      }
-      renderHuntGrid();
-    }
-
-    function updateHuntScore() {
-      const realCount = Array.from(selectedHunts).filter(id => {
-        const it = HUNT_ITEMS.find(x => x.id === id);
-        return it && it.isReal;
-      }).length;
-
-      document.getElementById('huntCountBadge').textContent = `${realCount}/10`;
-      const pct = Math.round((realCount / 10) * 100);
-      document.getElementById('huntScoreText').textContent = `${pct}% (${realCount}개)`;
-    }
-
-    // Step View Switcher
-    function switchStep(stepNum) {
-      document.querySelectorAll('.step-view').forEach(v => v.classList.add('hidden'));
-      document.getElementById(`view-step${stepNum}`).classList.remove('hidden');
-
-      document.querySelectorAll('.step-btn').forEach(btn => {
-        if (btn.getAttribute('data-step') === String(stepNum)) {
-          btn.className = 'step-btn flex-1 py-1 px-1.5 rounded-lg text-xs font-bold border transition-all flex items-center justify-center gap-1 bg-cyan-500/20 border-cyan-400 text-cyan-300';
+      if (allCompleted) {
+        if (chosenMol) {
+          btn.className = 'px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-extrabold rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer animate-pulse';
+          text.textContent = `3단계: '${chosenMol.name}' 결과 카드 확인하기 ➔`;
         } else {
-          btn.className = 'step-btn flex-1 py-1 px-1.5 rounded-lg text-xs font-bold border transition-all flex items-center justify-center gap-1 bg-slate-900 border-slate-800 text-slate-400';
+          btn.className = 'px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer';
+          text.textContent = '3단계: 6종 완성! 만들 분자 선택하기 ➔';
         }
-      });
-
-      playTone(550, 0.05, 'sine');
-
-      if (stepNum === 2) {
-        loadQuiz(currentQuizIndex);
-        resizeWaveCanvas();
-      } else if (stepNum === 3) {
-        calculateFinalBadge();
-      }
-    }
-
-    // Round 2 Quiz Controller
-    function loadQuiz(idx) {
-      const q = QUIZ_LIST[idx];
-      document.getElementById('quizIndexText').textContent = `${idx + 1} / ${QUIZ_LIST.length}`;
-      document.getElementById('quizBadge').textContent = q.badge;
-      document.getElementById('quizCategory').textContent = q.category;
-      document.getElementById('quizQuestion').textContent = q.question;
-      document.getElementById('choiceLabelO').textContent = q.labelO;
-      document.getElementById('choiceLabelX').textContent = q.labelX;
-
-      // Reset feedback and buttons
-      document.getElementById('quizFeedbackBox').classList.add('hidden');
-      document.getElementById('nextQuizBtn').classList.add('hidden');
-      document.querySelectorAll('.quiz-choice-btn').forEach(b => {
-        b.disabled = false;
-        b.className = 'quiz-choice-btn py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-black text-base border border-slate-700 active:scale-95 transition-all flex items-center justify-center gap-2';
-      });
-    }
-
-    function handleQuizChoice(choice) {
-      const q = QUIZ_LIST[currentQuizIndex];
-      const isCorrect = (choice === q.correct);
-      if (isCorrect) quizScore++;
-
-      // Lock buttons
-      document.querySelectorAll('.quiz-choice-btn').forEach(b => {
-        b.disabled = true;
-        const bChoice = b.getAttribute('data-choice');
-        if (bChoice === q.correct) {
-          b.className = 'quiz-choice-btn py-3 rounded-xl bg-emerald-600 text-white font-black text-base border border-emerald-400 flex items-center justify-center gap-2';
-        } else if (bChoice === choice && !isCorrect) {
-          b.className = 'quiz-choice-btn py-3 rounded-xl bg-red-600 text-white font-black text-base border border-red-400 flex items-center justify-center gap-2';
-        }
-      });
-
-      // Sound & Feedback
-      const fBox = document.getElementById('quizFeedbackBox');
-      const fTitle = document.getElementById('quizFeedbackTitle');
-      const fContent = document.getElementById('quizFeedbackContent');
-
-      if (isCorrect) {
-        playSuccessChime();
-        fBox.className = 'rounded-xl p-3 border bg-emerald-950/70 border-emerald-500 text-emerald-200 text-xs leading-relaxed';
-        fTitle.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i><span>${q.feedbackCorrect}</span>`;
       } else {
-        playBuzz();
-        fBox.className = 'rounded-xl p-3 border bg-red-950/70 border-red-500 text-red-200 text-xs leading-relaxed';
-        fTitle.innerHTML = `<i class="fa-solid fa-circle-xmark text-red-400"></i><span>${q.feedbackWrong}</span>`;
-      }
-
-      fContent.textContent = `💡 [과학 해설] ${q.explanation}`;
-      fBox.classList.remove('hidden');
-
-      const nextBtn = document.getElementById('nextQuizBtn');
-      nextBtn.classList.remove('hidden');
-      if (currentQuizIndex === QUIZ_LIST.length - 1) {
-        nextBtn.innerHTML = '<span>최종 탐정 결과 및 3단계 보기</span><i class="fa-solid fa-arrow-right"></i>';
-      } else {
-        nextBtn.innerHTML = '<span>다음 문제 풀기</span><i class="fa-solid fa-arrow-right"></i>';
+        btn.className = 'px-6 py-2.5 bg-slate-200 text-slate-500 font-bold rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-not-allowed';
+        text.textContent = `3단계: 6개 합성 완료 후 분자 선택 (${appState.completedMolecules.length} / 6)`;
       }
     }
 
-    // Step 3 Final Detective Ranking
-    function calculateFinalBadge() {
-      const realCount = Array.from(selectedHunts).filter(id => {
-        const it = HUNT_ITEMS.find(x => x.id === id);
-        return it && it.isReal;
-      }).length;
-
-      const title = document.getElementById('detectiveRankTitle');
-      const desc = document.getElementById('detectiveRankDesc');
-
-      if (realCount >= 8 && quizScore >= 2) {
-        title.textContent = '🌟 특급 일급 신호 탐정 (Rank: SSS)';
-        desc.textContent = `신호 사냥 ${realCount}/10개 색출 성공! / 팩트체크 퀴즈 ${quizScore}/3 정답`;
-      } else if (realCount >= 5) {
-        title.textContent = '⚡ 엘리트 신호 분석관 (Rank: A)';
-        desc.textContent = `신호 사냥 ${realCount}/10개 색출 성공! / 팩트체크 퀴즈 ${quizScore}/3 정답`;
-      } else {
-        title.textContent = '🔍 수습 신호 추적자 (Rank: B)';
-        desc.textContent = `신호 사냥 ${realCount}/10개 색출 / 팩트체크 퀴즈 ${quizScore}/3 정답`;
-      }
-    }
-
-    // Canvas Signal Oscilloscope for Step 2
-    let waveCanvas, waveCtx, wavePhase = 0;
-    function initWaveCanvas() {
-      waveCanvas = document.getElementById('quizWaveCanvas');
-      if (!waveCanvas) return;
-      waveCtx = waveCanvas.getContext('2d');
-      resizeWaveCanvas();
-      window.addEventListener('resize', resizeWaveCanvas);
-      requestAnimationFrame(renderQuizWave);
-    }
-
-    function resizeWaveCanvas() {
-      if (waveCanvas && waveCanvas.parentElement) {
-        waveCanvas.width = waveCanvas.parentElement.clientWidth;
-        waveCanvas.height = waveCanvas.parentElement.clientHeight;
-      }
-    }
-
-    function renderQuizWave() {
-      if (!waveCtx || !waveCanvas) return;
-      const w = waveCanvas.width;
-      const h = waveCanvas.height;
-      const cy = h / 2;
-
-      waveCtx.clearRect(0, 0, w, h);
-      wavePhase += 0.07;
-
-      // Oscilloscope grid
-      waveCtx.strokeStyle = '#0f172a';
-      waveCtx.lineWidth = 1;
-      waveCtx.beginPath();
-      for (let x = 0; x < w; x += 24) { waveCtx.moveTo(x, 0); waveCtx.lineTo(x, h); }
-      for (let y = 0; y < h; y += 18) { waveCtx.moveTo(0, y); waveCtx.lineTo(w, y); }
-      waveCtx.stroke();
-
-      const q = QUIZ_LIST[currentQuizIndex];
-      waveCtx.lineWidth = 2;
-
-      if (q && q.waveType === 'pir') {
-        waveCtx.strokeStyle = '#38bdf8';
-        waveCtx.beginPath();
-        for (let x = 0; x < w; x++) {
-          const mod = Math.sin(x * 0.03 + wavePhase);
-          const y = cy + Math.sin(x * 0.08) * 22 * mod;
-          if (x === 0) waveCtx.moveTo(x, y);
-          else waveCtx.lineTo(x, y);
-        }
-        waveCtx.stroke();
-      } else if (q && q.waveType === 'nfc') {
-        waveCtx.strokeStyle = '#c084fc';
-        waveCtx.beginPath();
-        for (let x = 0; x < w; x++) {
-          const carrier = Math.sin(x * 0.3 + wavePhase * 3);
-          const y = cy + carrier * 25;
-          if (x === 0) waveCtx.moveTo(x, y);
-          else waveCtx.lineTo(x, y);
-        }
-        waveCtx.stroke();
-      } else {
-        waveCtx.strokeStyle = '#fbbf24';
-        waveCtx.beginPath();
-        for (let x = 0; x < w; x++) {
-          const y = cy + Math.sin(x * 0.06 + wavePhase * 2) * 24;
-          if (x === 0) waveCtx.moveTo(x, y);
-          else waveCtx.lineTo(x, y);
-        }
-        waveCtx.stroke();
+    function handleGoToStep3Click() {
+      const isStorage = (appState.destinationCategory === 'storage');
+      if (isStorage) {
+        switchStep(3);
+        return;
       }
 
-      requestAnimationFrame(renderQuizWave);
+      const allCompleted = (appState.completedMolecules.length >= MOLECULES.length);
+      if (!allCompleted) {
+        sound.playWrong();
+        showToast(`6개 분자 합성을 모두 마쳐야 원하는 분자를 선택할 수 있습니다! (현재 ${appState.completedMolecules.length}/6 완료)`, '⚠️');
+        return;
+      }
+
+      openMoleculeSelectionModal();
     }
 
-    // DOM Setup
-    document.addEventListener('DOMContentLoaded', () => {
-      renderHuntGrid();
-      initWaveCanvas();
+    function peekCraftStructure() {
+      const banner = document.getElementById('craft-complete-banner');
+      banner.classList.add('opacity-10', 'pointer-events-none');
+      setTimeout(() => {
+        banner.classList.remove('opacity-10', 'pointer-events-none');
+      }, 3000);
+    }
 
-      // Navigation Step Buttons
-      document.querySelectorAll('.step-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const s = parseInt(btn.getAttribute('data-step'), 10);
-          switchStep(s);
-        });
-      });
+    function resetCraftMoleculeSlots() {
+      const curMol = MOLECULES[appState.stageIndex];
+      initCraftMoleculeSlots(curMol.id);
+      sound.playPop();
+    }
 
-      // Finish Hunt Button -> Go to Step 2
-      document.getElementById('finishHuntBtn').addEventListener('click', () => {
-        switchStep(2);
-      });
+    function resizeCraftCanvas() {
+      if (!craftCanvas) return;
+      const rect = craftCanvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      craftCanvas.width = rect.width * dpr;
+      craftCanvas.height = rect.height * dpr;
+      craftCtx.resetTransform();
+      craftCtx.scale(dpr, dpr);
+      craftWidth = rect.width;
+      craftHeight = rect.height;
+      const activeMol = MOLECULES[appState.stageIndex] || MOLECULES[0];
+      initCraftMoleculeSlots(activeMol.id);
+    }
 
-      // Quiz Choice Buttons
-      document.querySelectorAll('.quiz-choice-btn').forEach(b => {
-        b.addEventListener('click', () => {
-          const choice = b.getAttribute('data-choice');
-          handleQuizChoice(choice);
-        });
-      });
+    function setupCraftInteractions() {
+      const getPos = (e) => {
+        const rect = craftCanvas.getBoundingClientRect();
+        return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      };
 
-      // Next Quiz Button
-      document.getElementById('nextQuizBtn').addEventListener('click', () => {
-        if (currentQuizIndex < QUIZ_LIST.length - 1) {
-          currentQuizIndex++;
-          loadQuiz(currentQuizIndex);
-        } else {
-          switchStep(3);
-        }
-      });
-
-      // Hint Button
-      document.getElementById('giveUpHintBtn').addEventListener('click', () => {
-        HUNT_ITEMS.filter(x => x.isReal).slice(0, 3).forEach(x => selectedHunts.add(x.id));
-        renderHuntGrid();
-        playTone(620, 0.08, 'triangle');
-      });
-
-      // Student Reflection Save
-      document.getElementById('saveReflectionBtn').addEventListener('click', () => {
-        const val = document.getElementById('studentReflection').value.trim();
-        if (!val) return;
-        const toast = document.getElementById('reflectionSavedToast');
-        toast.classList.remove('hidden');
-        playSuccessChime();
-        setTimeout(() => toast.classList.add('hidden'), 3000);
-      });
-
-      // Sound Toggle
-      document.getElementById('soundToggleBtn').addEventListener('click', () => {
-        soundEnabled = !soundEnabled;
-        const icon = document.getElementById('soundIcon');
-        icon.className = soundEnabled ? 'fa-solid fa-volume-high text-cyan-400' : 'fa-solid fa-volume-xmark text-slate-500';
-      });
-
-      // 60s Round 1 Timer
-      round1Interval = setInterval(() => {
-        if (round1Seconds > 0) {
-          round1Seconds--;
-          document.getElementById('round1Timer').textContent = `${round1Seconds}s`;
-          if (round1Seconds === 0) {
-            playBuzz();
+      const findSlot = (x, y, rad = 52) => {
+        let best = null;
+        let minD = rad;
+        for (const s of craftSlots) {
+          if (!s.filled) {
+            const d = Math.hypot(s.x - x, s.y - y);
+            if (d < minD) { minD = d; best = s; }
           }
         }
-      }, 1000);
+        return best;
+      };
 
-      // 5-Min Master Timer
-      masterInterval = setInterval(() => {
-        if (masterSeconds > 0) {
-          masterSeconds--;
-          const m = String(Math.floor(masterSeconds / 60)).padStart(2, '0');
-          const s = String(masterSeconds % 60).padStart(2, '0');
-          document.getElementById('overallTimer').textContent = `${m}:${s}`;
+      craftCanvas.addEventListener('pointerdown', (e) => {
+        if (isCraftComplete) return;
+        const pos = getPos(e);
+        for (let i = fallingAtoms.length - 1; i >= 0; i--) {
+          const a = fallingAtoms[i];
+          if (Math.hypot(a.x - pos.x, a.y - pos.y) <= a.radius + 16) {
+            draggedAtom = a;
+            draggedAtom.isDragging = true;
+            activePointerId = e.pointerId;
+            craftCanvas.setPointerCapture(e.pointerId);
+            sound.playPop();
+            break;
+          }
         }
-      }, 1000);
+      });
+
+      craftCanvas.addEventListener('pointermove', (e) => {
+        if (!draggedAtom || e.pointerId !== activePointerId) return;
+        const pos = getPos(e);
+        draggedAtom.x = pos.x;
+        draggedAtom.y = pos.y;
+        const cand = findSlot(pos.x, pos.y, 50);
+        hoveredSlot = (cand && cand.type === draggedAtom.type) ? cand : null;
+      });
+
+      const handleRelease = (e) => {
+        if (!draggedAtom || (activePointerId !== null && e.pointerId !== activePointerId)) return;
+        const pos = getPos(e);
+        const target = findSlot(pos.x, pos.y, 52);
+
+        if (target) {
+          if (target.type === draggedAtom.type) {
+            target.filled = true;
+            sound.playPop();
+            createCraftBurst(target.x, target.y, target.type === 'O' ? '#ef4444' : (target.type === 'C' ? '#10b981' : '#38bdf8'));
+            const idx = fallingAtoms.indexOf(draggedAtom);
+            if (idx > -1) fallingAtoms.splice(idx, 1);
+            updateCraftHUD();
+            checkCraftCompletion();
+          } else {
+            sound.playWrong();
+            createCraftBurst(draggedAtom.x, draggedAtom.y, '#f59e0b');
+            draggedAtom.isDragging = false;
+            draggedAtom.vy = 2.2;
+            draggedAtom.vx = (Math.random() - 0.5) * 5;
+          }
+        } else {
+          draggedAtom.isDragging = false;
+          draggedAtom.vy = Math.max(1.5, draggedAtom.vy);
+        }
+
+        draggedAtom = null;
+        hoveredSlot = null;
+        activePointerId = null;
+        try { craftCanvas.releasePointerCapture(e.pointerId); } catch (err) {}
+      };
+
+      craftCanvas.addEventListener('pointerup', handleRelease);
+      craftCanvas.addEventListener('pointercancel', handleRelease);
+    }
+
+    // -------------------------------------------------------------
+    // 단계 전환 및 카드 UI 렌더링
+    // -------------------------------------------------------------
+    function switchStep(step) {
+      if (isCaptureRunning) {
+        showToast('30초 포집 게임이 진행 중입니다. 잠시만 기다려주세요!', '⏳');
+        return;
+      }
+
+      // [핵심 게이트웨이] 3단계로 이동 시 6개 분자 합성 완료 및 분자 선택 여부 검증 (CCU 모드)
+      if (step === 3 && appState.destinationCategory === 'utilization') {
+        const allCompleted = (appState.completedMolecules.length >= MOLECULES.length);
+        if (!allCompleted) {
+          sound.playWrong();
+          showToast(`6가지 분자 구조를 모두 완성해야 원하는 분자를 선택하고 3단계로 갈 수 있습니다! (진행도: ${appState.completedMolecules.length}/6)`, '🔒');
+          return;
+        }
+        if (!appState.selectedMoleculeId) {
+          sound.playWrong();
+          showToast('3단계로 넘어가기 전에 먼저 제작할 분자 1가지를 선택해 주세요!', '👆');
+          openMoleculeSelectionModal();
+          return;
+        }
+      }
+
+      appState.currentStep = step;
+
+      [1, 2, 3].forEach(num => {
+        const sec = document.getElementById(`step-section-${num}`);
+        const tab = document.getElementById(`step-tab-${num}`);
+        if (!sec || !tab) return;
+
+        if (num === step) {
+          sec.classList.remove('hidden');
+          tab.className = 'py-2.5 px-2 rounded-xl text-center font-bold text-xs sm:text-sm transition-all bg-emerald-600 text-white shadow-xs flex items-center justify-center gap-1.5';
+          const badge = tab.querySelector('span:first-child');
+          if (badge) badge.className = 'w-5 h-5 rounded-full bg-white/20 text-white flex items-center justify-center text-[11px]';
+        } else {
+          sec.classList.add('hidden');
+          tab.className = 'py-2.5 px-2 rounded-xl text-center font-semibold text-xs sm:text-sm transition-all text-slate-600 hover:bg-slate-100 flex items-center justify-center gap-1.5';
+          const badge = tab.querySelector('span:first-child');
+          if (badge) badge.className = 'w-5 h-5 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-[11px]';
+        }
+      });
+
+      if (step === 2) {
+        setTimeout(resizeCraftCanvas, 50);
+        updateStep3ButtonState();
+      } else if (step === 3) {
+        updateResultCard();
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function selectDestinationCategory(category) {
+      appState.destinationCategory = category;
+      const cardStorage = document.getElementById('dest-card-storage');
+      const cardUtil = document.getElementById('dest-card-utilization');
+      const badgeStorage = document.getElementById('badge-dest-storage');
+      const badgeUtil = document.getElementById('badge-dest-utilization');
+      const craftSection = document.getElementById('craft-game-section');
+
+      if (category === 'storage') {
+        cardStorage.className = 'border-2 border-slate-900 bg-slate-100 rounded-2xl p-4 sm:p-5 cursor-pointer transition-all shadow-md';
+        cardUtil.className = 'border-2 border-slate-200 bg-white rounded-2xl p-4 sm:p-5 cursor-pointer transition-all hover:border-emerald-300';
+        badgeStorage.classList.remove('hidden');
+        badgeStorage.className = 'px-2 py-0.5 rounded-full text-[11px] font-bold bg-slate-900 text-white';
+        badgeUtil.classList.add('hidden');
+        craftSection.classList.add('hidden');
+        updateStep3ButtonState();
+        showToast('지하 깊은 곳에 가두는 영구 저장(CCS)을 선택했습니다.', '🪨');
+      } else {
+        cardStorage.className = 'border-2 border-slate-200 bg-white rounded-2xl p-4 sm:p-5 cursor-pointer transition-all hover:border-slate-400';
+        cardUtil.className = 'border-2 border-emerald-500 bg-emerald-50/60 rounded-2xl p-4 sm:p-5 cursor-pointer transition-all shadow-md';
+        badgeStorage.classList.add('hidden');
+        badgeUtil.classList.remove('hidden');
+        craftSection.classList.remove('hidden');
+        updateStep3ButtonState();
+        setTimeout(resizeCraftCanvas, 50);
+        showToast('원자 결합 챌린지(CCU)를 시작합니다!', '🧬');
+      }
+    }
+
+    function renderMoleculeCards() {
+      const container = document.getElementById('molecule-cards-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const allCompleted = (appState.completedMolecules.length >= MOLECULES.length);
+
+      MOLECULES.forEach((mol, idx) => {
+        const isCurrentActive = (appState.stageIndex === idx);
+        const isDone = appState.completedMolecules.includes(mol.id);
+        const isSelectedForReport = (appState.selectedMoleculeId === mol.id);
+
+        const card = document.createElement('div');
+        card.id = `mol-card-${mol.id}`;
+        
+        let borderStyle = 'border border-slate-200 bg-white hover:border-slate-300';
+        if (allCompleted) {
+          borderStyle = isSelectedForReport 
+            ? 'border-2 border-emerald-600 bg-emerald-50/60 shadow-md ring-2 ring-emerald-300' 
+            : 'border border-slate-200 bg-white hover:border-emerald-400 hover:shadow-xs';
+        } else if (isCurrentActive) {
+          borderStyle = 'border-2 border-emerald-500 bg-emerald-50/20 shadow-xs ring-1 ring-emerald-300';
+        }
+
+        card.className = `${borderStyle} rounded-2xl p-3.5 sm:p-4 transition-all flex flex-col justify-between`;
+
+        const statusBadge = isDone
+          ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">✓ 합성 완료</span>`
+          : (isCurrentActive 
+              ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 animate-pulse">진행 중 (${idx+1}/6)</span>`
+              : `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-500">대기 (${idx+1}/6)</span>`);
+
+        let actionButtonHTML = '';
+        if (allCompleted) {
+          // 6종 전원 완성된 경우: 명확한 [이 분자로 최종 선택] 및 [선택됨 & 3단계 이동] 버튼
+          if (isSelectedForReport) {
+            actionButtonHTML = `
+              <div class="grid grid-cols-2 gap-1.5 mt-2.5">
+                <button onclick="inspectMoleculeStructure('${mol.id}')" class="py-1.5 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] border border-slate-300 flex items-center justify-center gap-1">
+                  <span>🔬 구조 보기</span>
+                </button>
+                <button onclick="pickFinalMolecule('${mol.id}', true)" class="py-1.5 px-2 rounded-xl bg-emerald-600 text-white font-black text-[11px] flex items-center justify-center gap-1 shadow-sm">
+                  <span>✓ 3단계로 이동</span>
+                </button>
+              </div>
+            `;
+          } else {
+            actionButtonHTML = `
+              <div class="grid grid-cols-2 gap-1.5 mt-2.5">
+                <button onclick="inspectMoleculeStructure('${mol.id}')" class="py-1.5 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] border border-slate-300 flex items-center justify-center gap-1">
+                  <span>🔬 구조 보기</span>
+                </button>
+                <button onclick="pickFinalMolecule('${mol.id}', false)" class="py-1.5 px-2 rounded-xl bg-emerald-50 hover:bg-emerald-600 hover:text-white text-emerald-800 font-extrabold text-[11px] border border-emerald-300 hover:border-emerald-600 transition flex items-center justify-center gap-1">
+                  <span>👉 이 분자 선택</span>
+                </button>
+              </div>
+            `;
+          }
+        } else if (isDone) {
+          actionButtonHTML = `
+            <div class="grid grid-cols-2 gap-1.5 mt-2.5">
+              <button onclick="inspectMoleculeStructure('${mol.id}')" class="py-1.5 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] border border-slate-300 flex items-center justify-center gap-1">
+                <span>🔬 구조 보기</span>
+              </button>
+              <button disabled class="py-1.5 px-2 rounded-xl bg-slate-100 text-slate-400 font-semibold text-[11px] cursor-not-allowed">
+                <span>6종 완료 후 선택</span>
+              </button>
+            </div>
+          `;
+        } else {
+          actionButtonHTML = `
+            <button onclick="inspectMoleculeStructure('${mol.id}')" class="w-full mt-2.5 py-1.5 px-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 font-semibold text-[11px] border border-slate-200 flex items-center justify-center gap-1">
+              <span>🔬 분자 구조 미리보기</span>
+            </button>
+          `;
+        }
+
+        card.innerHTML = `
+          <div>
+            <div class="flex items-start justify-between gap-1.5 mb-1.5">
+              <div>
+                <h4 class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center gap-1.5">
+                  <span>${idx + 1}. ${mol.name}</span>
+                </h4>
+                <div class="font-mono text-emerald-600 font-extrabold text-xs sm:text-sm tracking-tight">${mol.formula}</div>
+              </div>
+              ${statusBadge}
+            </div>
+
+            <div class="mb-2">
+              <span class="inline-block px-2 py-0.5 text-[11px] font-bold ${mol.tagBg} rounded-md">
+                ${mol.tag}
+              </span>
+            </div>
+
+            <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+              ${mol.desc}
+            </p>
+          </div>
+
+          <div class="mt-2.5 pt-2 border-t border-slate-100">
+            <div class="flex items-center justify-between text-xs text-slate-500">
+              <span class="truncate">구조: ${mol.shape.split('(')[0]}</span>
+              <span class="font-bold text-emerald-700 shrink-0 ml-1">키트 가능 🧬</span>
+            </div>
+            ${actionButtonHTML}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function inspectMoleculeStructure(molId) {
+      const mol = MOLECULES.find(m => m.id === molId);
+      if (!mol) return;
+      const isFinal = (appState.completedMolecules.length >= MOLECULES.length);
+      openMoleculeStructureModal(mol, isFinal);
+      sound.playPop();
+    }
+
+    function pickFinalMolecule(molId, autoOpenStep3 = false) {
+      appState.selectedMoleculeId = molId;
+      renderMoleculeCards();
+      renderModalMoleculePicker();
+      updateStep3ButtonState();
+      
+      const mol = MOLECULES.find(m => m.id === molId);
+      showToast(`'${mol.name} (${mol.formula})'이(가) 최종 분자로 선택되었습니다!`, '✅');
+
+      if (autoOpenStep3) {
+        setTimeout(() => {
+          switchStep(3);
+        }, 250);
+      }
+    }
+
+    function renderModalMoleculePicker() {
+      const container = document.getElementById('modal-molecule-picker-grid');
+      if (!container) return;
+      container.innerHTML = '';
+
+      MOLECULES.forEach((mol, idx) => {
+        const isSelected = (appState.selectedMoleculeId === mol.id);
+        const item = document.createElement('div');
+        
+        const borderStyle = isSelected 
+          ? 'border-2 border-emerald-600 bg-emerald-50/80 shadow-sm ring-2 ring-emerald-300' 
+          : 'border border-slate-200 bg-white hover:border-emerald-300 hover:bg-slate-50';
+
+        item.className = `${borderStyle} rounded-2xl p-3 flex items-center justify-between gap-2.5 cursor-pointer transition`;
+        item.onclick = () => {
+          appState.selectedMoleculeId = mol.id;
+          renderModalMoleculePicker();
+          renderMoleculeCards();
+          updateStep3ButtonState();
+          sound.playPop();
+        };
+
+        item.innerHTML = `
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-8 h-8 rounded-xl ${isSelected ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-700'} flex items-center justify-center font-black text-xs shrink-0">
+              ${idx + 1}
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <span class="font-extrabold text-sm text-slate-900">${mol.name}</span>
+                <span class="font-mono text-xs font-bold text-emerald-700">(${mol.formula})</span>
+              </div>
+              <p class="text-[11px] text-slate-500 truncate">${mol.tag}</p>
+            </div>
+          </div>
+
+          <div class="shrink-0">
+            ${isSelected 
+              ? `<span class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-extrabold text-xs shadow-xs flex items-center gap-1">✓ 선택됨</span>` 
+              : `<button class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 hover:bg-emerald-100 hover:text-emerald-800 font-bold text-xs border border-slate-200">선택</button>`}
+          </div>
+        `;
+        container.appendChild(item);
+      });
+
+      const activeMol = MOLECULES.find(m => m.id === appState.selectedMoleculeId);
+      const confirmBtn = document.getElementById('modal-confirm-btn');
+      const btnLabel = document.getElementById('modal-confirm-btn-label');
+      if (confirmBtn && btnLabel) {
+        if (activeMol) {
+          confirmBtn.disabled = false;
+          confirmBtn.className = "w-full sm:w-2/3 py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-1.5 active:scale-98 cursor-pointer";
+          btnLabel.textContent = `'${activeMol.name}' 선택 완료 ➔ 3단계로 이동`;
+        } else {
+          confirmBtn.disabled = true;
+          confirmBtn.className = "w-full sm:w-2/3 py-2.5 px-4 rounded-xl bg-slate-200 text-slate-400 font-bold text-xs sm:text-sm transition flex items-center justify-center gap-1.5 cursor-not-allowed";
+          btnLabel.textContent = '만들 분자를 먼저 선택해 주세요';
+        }
+      }
+    }
+
+    function openMoleculeSelectionModal() {
+      renderModalMoleculePicker();
+      document.getElementById('selection-confirm-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeMoleculeSelectionModal() {
+      document.getElementById('selection-confirm-modal').classList.add('hidden');
+    }
+
+    function proceedToStep3FromModal() {
+      if (!appState.selectedMoleculeId) {
+        sound.playWrong();
+        showToast('만들 분자를 먼저 목록에서 클릭해 주세요!', '👆');
+        return;
+      }
+      closeMoleculeSelectionModal();
+      switchStep(3);
+    }
+
+    function updateResultCard() {
+      const isPoints = (appState.captureMethod === 'points');
+      const isStorage = (appState.destinationCategory === 'storage');
+      const mol = MOLECULES.find(m => m.id === appState.selectedMoleculeId) || MOLECULES[0];
+      const methodKey = appState.captureMethod;
+      const capturedAmount = appState.capturedKg[methodKey] || (isPoints ? 820 : 4);
+
+      const capTitle = document.getElementById('card-capture-title');
+      const capConc = document.getElementById('card-capture-conc');
+      const capStat = document.getElementById('card-capture-stat');
+      if (isPoints) {
+        capTitle.textContent = '배출원 포집 (공장/발전소)';
+        capConc.textContent = '농도: 약 4~15% (초고속 대량 포집)';
+        capStat.textContent = `30초 게임 결과: 총 ${capturedAmount}kg 포집 성공!`;
+      } else {
+        capTitle.textContent = '직접 공기 포집 (DAC)';
+        capConc.textContent = '농도: 약 0.04% (대기 정화형)';
+        capStat.textContent = `30초 게임 결과: 총 ${capturedAmount}kg 발견 정화!`;
+      }
+
+      const destTitle = document.getElementById('card-dest-title');
+      const destDesc = document.getElementById('card-dest-desc');
+      if (isStorage) {
+        destTitle.textContent = '영구 저장 (CCS)';
+        destDesc.textContent = '지하 1~2km 덮개암 아래 영구 격리';
+      } else {
+        destTitle.textContent = '자원화 활용 (CCU)';
+        destDesc.textContent = '원자 결합을 통한 고부가가치 분자 합성';
+      }
+
+      const molName = document.getElementById('card-mol-name');
+      const molFormula = document.getElementById('card-mol-formula');
+      const kitStatus = document.getElementById('card-kit-status');
+      const detailFormula = document.getElementById('card-detail-formula');
+      const detailAtoms = document.getElementById('card-detail-atoms');
+      const detailUsage = document.getElementById('card-detail-usage');
+      const detailTag = document.getElementById('card-detail-tag');
+      const detailFate = document.getElementById('card-detail-fate');
+      const detailKitDesc = document.getElementById('card-detail-kit-desc');
+
+      if (isStorage) {
+        molName.textContent = '지하 고정 (초임계 CO₂)';
+        molFormula.textContent = 'CO₂';
+        kitStatus.className = 'text-[10px] font-extrabold text-white bg-slate-700 px-1.5 py-0.5 rounded inline-block mt-1';
+        kitStatus.textContent = '지하 암석층 격리';
+        detailFormula.textContent = 'CO₂ (이산화탄소)';
+        detailAtoms.textContent = '탄소(검정) 1개 + 산소(빨강) 2개 (직선형)';
+        detailUsage.textContent = '지하 1~2km 심부 염수층 광물화 저장';
+        detailTag.textContent = '영구 격리 · 대기 차단';
+        detailFate.textContent = '지하 깊은 암석 틈새에 수백~수천 년간 영구 고정';
+        detailKitDesc.textContent = '기본 CO₂ 분자(검정1+빨강2)를 모형으로 조립해 보세요.';
+      } else {
+        molName.textContent = mol.name;
+        molFormula.textContent = mol.formula;
+        kitStatus.className = 'text-[10px] font-extrabold text-white bg-emerald-600 px-1.5 py-0.5 rounded inline-block mt-1';
+        kitStatus.textContent = '키트 모형 제작 가능 🧬';
+        detailKitDesc.textContent = `도안을 참고하여 ${mol.name} 모형을 조립하세요 (${mol.atoms}).`;
+        detailFormula.textContent = mol.formula;
+        detailAtoms.textContent = mol.atoms;
+        detailUsage.textContent = mol.usage;
+        detailTag.textContent = mol.tag;
+        detailFate.textContent = mol.fate;
+      }
+    }
+
+    function copySummaryText() {
+      const studentName = document.getElementById('student-name-input').value.trim() || '익명의 연구원';
+      const isPoints = (appState.captureMethod === 'points');
+      const isStorage = (appState.destinationCategory === 'storage');
+      const mol = MOLECULES.find(m => m.id === appState.selectedMoleculeId) || MOLECULES[0];
+      const amount = appState.capturedKg[appState.captureMethod] || (isPoints ? 2400 : 12);
+
+      const captureText = isPoints 
+        ? `배출원 포집 (농도 4~15%, 30초간 ${amount}kg 대량 포집)` 
+        : `직접 공기 포집 DAC (농도 0.04%, 30초간 ${amount}kg 정화)`;
+      const destText = isStorage 
+        ? '영구 저장(CCS) - 지하 덮개암 아래 영구 격리' 
+        : `자원화 활용(CCU) - 원자 결합 챌린지로 ${mol.name} (${mol.formula}) 합성`;
+
+      const summary = `[탄소포집 공장 체험 학습 보고서]
+- 연구원: ${studentName}
+- 1단계 포집 체험: ${captureText}
+- 2단계 보낼 곳: ${destText}
+- 3단계 산출 분자: ${isStorage ? '초임계 CO₂ (지하 격리)' : `${mol.name} [${mol.formula}] / ${mol.tag}`}
+- 분자 모형 조립: ${isStorage ? '기본 CO₂ 분자 모형' : `${mol.name} 모형 제작 가능 (${mol.atoms})`}
+- 핵심 배움: 배출가스는 CO₂ 농도가 진해 빠르게 대량 포집할 수 있고, DAC는 희박하지만 이미 대기에 퍼진 탄소를 줄입니다. 저장은 영구 격리하고, 활용은 원자를 조립해 유용한 자원으로 변환합니다.`;
+
+      const textArea = document.createElement("textarea");
+      textArea.value = summary;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      textArea.style.top = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+
+      try {
+        if (document.execCommand('copy')) {
+          showToast('기록지용 요약 내용이 복사되었습니다!', '📋');
+        } else {
+          showToast('복사에 실패했습니다.', '⚠️');
+        }
+      } catch (err) {
+        showToast('클립보드 접근이 제한되었습니다.', '⚠️');
+      }
+      document.body.removeChild(textArea);
+    }
+
+    let toastTimeout = null;
+    function showToast(message, icon = '💡') {
+      const toast = document.getElementById('custom-toast');
+      const toastMsg = document.getElementById('toast-message');
+      const toastIcon = document.getElementById('toast-icon');
+      toastMsg.textContent = message;
+      toastIcon.textContent = icon;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2600);
+    }
+
+    function resetAllStages() {
+      if (isCaptureRunning) isCaptureRunning = false;
+      if (captureAnimId) cancelAnimationFrame(captureAnimId);
+      clearAutoModalTimers();
+      appState.captureMethod = 'points';
+      appState.destinationCategory = 'utilization';
+      appState.stageIndex = 0;
+      appState.completedMolecules = [];
+      appState.selectedMoleculeId = null; // 초기화 시 미선택 상태
+      appState.capturedKg = { points: 0, dac: 0 };
+      appState.hitCount = { points: 0, dac: 0 };
+      document.getElementById('student-name-input').value = '';
+      document.getElementById('all-completed-tag').classList.add('hidden');
+      document.getElementById('cards-guide-text').textContent = '각 분자를 차례대로 합성하세요. 합성을 완료한 분자는 언제든지 클릭해 최종 제작 분자로 선택할 수 있습니다.';
+
+      selectCaptureMethod('points');
+      selectDestinationCategory('utilization');
+      renderMoleculeCards();
+      initCraftMoleculeSlots('ethylene');
+      updateStep3ButtonState();
+      switchStep(1);
+      showToast('처음 상태로 초기화되었습니다.', '🔄');
+    }
+
+    // 창 크기 조절 이벤트
+    window.addEventListener('resize', () => {
+      resizeGameCanvas();
+      drawCaptureStaticPreview();
+      resizeCraftCanvas();
     });
+
+    window.onload = function() {
+      lucide.createIcons();
+
+      // 1단계 포집 캔버스 초기화
+      gameCanvas = document.getElementById('game-canvas');
+      gameCtx = gameCanvas.getContext('2d');
+      resizeGameCanvas();
+
+      const handleGamePointer = (e) => {
+        if (!isCaptureRunning) return;
+        e.preventDefault();
+        if (e.touches && e.touches.length > 0) {
+          for (let i = 0; i < e.touches.length; i++) {
+            handleCaptureHit(e.touches[i].clientX, e.touches[i].clientY);
+          }
+        } else {
+          handleCaptureHit(e.clientX, e.clientY);
+        }
+      };
+      gameCanvas.addEventListener('pointerdown', handleGamePointer, { passive: false });
+      gameCanvas.addEventListener('pointermove', (e) => {
+        if (e.buttons === 1) handleGamePointer(e);
+      }, { passive: false });
+
+      // 2단계 결합 캔버스 초기화
+      craftCanvas = document.getElementById('craft-canvas');
+      craftCtx = craftCanvas.getContext('2d');
+      resizeCraftCanvas();
+      setupCraftInteractions();
+
+      // 기본 UI 렌더링
+      renderMoleculeCards();
+      selectCaptureMethod('points');
+      selectDestinationCategory('utilization');
+      initCraftMoleculeSlots('ethylene');
+      updateStep3ButtonState();
+
+      // 결합 애니메이션 루프 시작
+      requestAnimationFrame(craftLoop);
+    };
   </script>
 </body>
 </html>
